@@ -5,19 +5,31 @@ class Login extends my_controller {
 
 	public function index()
 	{
-		$this->setLink('createAccountLink', './create_account');
-		$this->setCss('assets/css/loginStyle.css');
-		$this->setTitle('Login');
+		$title = 'Login';
+		$this->setTitle($title);
 
-		$this->load_views('login/login-view');
+		$css_file = 'loginStyle';
+		$this->setCssFile($css_file);
+
+		$data = array('createAccountLink' => './create_account');
+		$this->setData($data);
+
+		$login_view = 'login/login-view';
+		$this->load_views($login_view);
 	}
 
 	public function create_account()
 	{
-		$this->setTitle('Create Account');
-		$this->setLink('loginLink', './index');
-		$this->setCss('assets/css/loginStyle.css');
+		$title = 'Create Account';
+		$this->setTitle($title);
 
-		$this->load_views('login/create-account-view');
+		$css_file = 'loginStyle';
+		$this->setCssFile($css_file);
+
+		$data = array('loginLink' => './index');
+		$this->setData($data);
+
+		$create_account_view = 'login/create-account-view';
+		$this->load_views($create_account_view);
 	}
 }
