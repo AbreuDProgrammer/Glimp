@@ -14,8 +14,8 @@ class Login extends my_controller {
 		$data = array('createAccountLink' => './create_account');
 		$this->setData($data);
 
-		$login_view = 'login/login-view';
-		$this->load_views($login_view);
+		$view = 'login/login-view';
+		$this->load_views($view);
 	}
 
 	public function create_account()
@@ -29,7 +29,7 @@ class Login extends my_controller {
 		$data = array('loginLink' => './index');
 		$this->setData($data);
 
-		$create_account_view = 'login/create-account-view';
-		$this->load_views($create_account_view);
+		$view = 'login/create-account-view';
+		$this->load_views($view);
 	}
 }

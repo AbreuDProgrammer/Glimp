@@ -1,0 +1,27 @@
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
+
+class Home extends my_controller {
+
+	public function index()
+	{
+		// Define um titulo
+		$title = 'Rain';
+		$this->setTitle($title);
+
+		// Define o ficheiro de css da pagina
+		$css_file = 'homeStyle';
+		$this->setCssFile($css_file);
+
+		// Define as variaveis passadas para a view
+		$data = array();
+		$this->setData($data);
+
+		// Prepara a view para o menu
+		$this->setMenu();
+
+		// Implementa todas as views
+		$view = 'home/home-view';
+		$this->load_views($view);
+	}
+}
