@@ -1,0 +1,35 @@
+/* ------------------- Login ------------------- */
+
+#loginDiv, #createAccountDiv
+{
+    flex-direction: column;
+    align-items: center;
+
+    margin-top: 5em;
+    width: 100%;
+    height: 100%;
+}
+
+#formDiv
+{
+    justify-content: center;
+    align-items: center;
+}
+
+#tittleDiv
+{
+    font-size: 1.5em;
+}
+
+.inputDiv
+{
+    justify-content: center;
+    flex-direction: column;
+
+    margin: 1em;
+}
+
+.submitDiv
+{
+    justify-content: center;
+}

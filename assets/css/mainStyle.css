@@ -1,0 +1,26 @@
+/* ------------------- Patterns ------------------- */
+
+html, body, div 
+{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+
+    margin: 0;
+    border: 0;
+    padding: 0;
+}
+
+html, body
+{
+    height: auto;
+    width: 100%;
+}
+
+input 
+{
+    padding: 1em;
+    border-radius: 0.5em;
+}
