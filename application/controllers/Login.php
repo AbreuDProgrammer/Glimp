@@ -8,10 +8,10 @@ class Login extends my_controller {
 		$title = 'Login';
 		$this->setTitle($title);
 
-		$css_file = 'loginStyle';
-		$this->setCssFile($css_file);
+		$css_file = array('loginStyle');
+		$this->setCssFiles($css_file);
 
-		$data = array('createAccountLink' => './create_account');
+		$data = array('createAccountLink' => $this->stl('create_account'));
 		$this->setData($data);
 
 		$view = 'login/login-view';
@@ -23,10 +23,10 @@ class Login extends my_controller {
 		$title = 'Create Account';
 		$this->setTitle($title);
 
-		$css_file = 'loginStyle';
-		$this->setCssFile($css_file);
+		$css_file = array('loginStyle');
+		$this->setCssFiles($css_file);
 
-		$data = array('loginLink' => './index');
+		$data = array('loginLink' => $this->stl('login'));
 		$this->setData($data);
 
 		$view = 'login/create-account-view';

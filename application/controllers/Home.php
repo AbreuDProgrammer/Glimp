@@ -10,8 +10,8 @@ class Home extends my_controller {
 		$this->setTitle($title);
 
 		// Define o ficheiro de css da pagina
-		$css_file = 'homeStyle';
-		$this->setCssFile($css_file);
+		$css_file = array('homeStyle');
+		$this->setCssFiles($css_file);
 
 		// Define as variaveis passadas para a view
 		$data = array();

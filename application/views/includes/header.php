@@ -5,9 +5,12 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="<? if(isset($cssMain)) echo $cssMain; ?>">
-    <link rel="stylesheet" href="<? if(isset($cssPage)) echo $cssPage; ?>">
-    <link rel="stylesheet" href="<? if(isset($cssMenu)) echo $cssMenu; ?>">
-    <title><?= $title ?></title>
+    <? if(isset($css)) foreach($css as $path): ?>
+        <link rel="stylesheet" href="<?= $path; ?>">
+    <? endforeach ?>
+    <? if(isset($js)) foreach($js as $path): ?>
+        <script src="<?= $path; ?>"></script>
+    <? endforeach ?>
+    <title><? if(isset($title)) echo $title; ?></title>
 </head>
 <body>

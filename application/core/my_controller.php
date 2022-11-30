@@ -5,103 +5,156 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 // com funções padronizadas e úteis
 abstract class my_controller extends CI_Controller {
 
-	// Variavel que verifica se todos os requisitos foram cumpridos para 
-	// o carregamento da pagina ser sucedido
-	private bool $ready_to_load = false;
-
-	// Variavel de strings keys necessarias para o carregamento de qualquer pagina
-	private array $data_needed = array('cssMain', 'cssPage', 'title');
+	// Design Pattern Iterator
+	protected $iterator;
 
 	// Variavel que verifica se a pagina tem menu abilitado
-	private bool $load_menu = FALSE;
+	private bool $load_nav = FALSE;
 
 	// Variaveis arrays associativos para usar nas diferentes views
 	private $data_header = array();
-	private $data_menu = array();
+	private $data_nav = array();
 	private $data_body = array();
 	private $data_footer = array();
 
-	// Contrutor que carrega as funcionalidades de urls e adiciona um css padrão a todas as paginas
+	// Configs para paths
+	private $includes_path = 'includes';
+	private $include_header = 'header';
+	private $include_nav = 'menu';
+	private $include_footer = 'footer';
+
+	private $assets_path = 'assets';
+	private $css_path = 'css';
+	private $js_path = 'js';
+	private $main_css_path = 'mainStyle';
+	private $nav_css_path = 'navStyle';
+
+	//! Contrutor que carrega as funcionalidades de urls e adiciona um css padrão a todas as paginas
 	public function __construct()
 	{
+		// Chama o construtor do CI_Controller
 		parent::__construct();
+
+		// Instancia as funcionalidades de ancoras
 		$this->load->helper('url');
-		
-		$this->data_header['cssMain'] = base_url('assets/css/mainStyle.css');
+
+		// Define os ficheiros de css main do site
+		$this->setMainCssFile();
 	}
 
-	// Funcionalidade que carrega as views padrões em todas as paginas mais a view do path passado
-	// as variaveis usadas nas views são carregadas por meio de funcionalidades
+	//* Funcionalidade que carrega as views padrões em todas as paginas mais a view do path passado
+	//* as variaveis usadas nas views são carregadas por meio de funcionalidades
 	protected function load_views($path, $return = FALSE)
 	{
-		$reasons = $this->verify_datas();
-		if(!$this->ready_to_load){
-			//! Retirar depois do modo programador
-			print_r($reasons);
-			return;
-		}
+		$this->load->view($this->includes_path.'/'.$this->include_header, $this->data_header);
 
-		$this->load->view('includes/header', $this->data_header);
-
-		if($this->load_menu)
-			$this->load->view('includes/menu', $this->data_menu);
+		if($this->load_nav)
+			$this->load->view($this->includes_path.'/'.$this->include_nav, $this->data_nav);
 
 		$this->load->view($path, $this->data_body, $return);
 
-		$this->load->view('includes/footer', $this->data_footer);
+		$this->load->view($this->includes_path.'/'.$this->include_footer, $this->data_footer);
 	}
 
-	// Funcionalidade que define o titulo da pagina
+	//* Funcionalidade que define o titulo da pagina
 	protected function setTitle($title = 'Undefined title')
 	{
+		if(!$title || !is_string($title))
+			return;
+
 		$this->data_header['title'] = $title;
 	}
 
-	// Funcionalidade que define o ficheiro de css do menu
-	private function setMenuCssFile()
+	//* Adiciona ficheiros de css ao header
+	protected function setCssFiles($array)
 	{
-		$this->data_header['cssMenu'] = base_url('assets/css/menuStyle.css');
+		if(!$array || !is_array($array))
+			return;
+
+		foreach($array as $key => $path){
+			$this->data_header['css'][$key] = base_url($this->assets_path.'/'.$this->css_path.'/'.$path.'.css');
+		}
 	}
 
-	// Funcionalidade que define o ficheiro de css da pagina
-	protected function setCssFile($path = '')
+	//* Adiciona um ficheiro de js ao header
+	protected function setJsFiles($array)
 	{
-		$this->data_header['cssPage'] = base_url('assets/css/'.$path.'.css');
+		if(!$array || !is_array($array))
+			return;
+
+		foreach($array as $key => $path){
+			$this->data_header['js'][$key] = base_url($this->assets_path.'/'.$this->js_path.'/'.$path.'.js');
+		}
 	}
 
-	// Funcionalidade que define alguma data qualquer da pagina
-	protected function setData($array = [])
+	//* Funcionalidade que organiza tudo para que o menu seja abilitado
+	protected function setMenu()
 	{
-		if(!$array)
+		$this->load_nav = TRUE;
+		$this->setNavCssFile();
+	}
+
+	//* Funcionalidade que define alguma data qualquer da pagina
+	protected function setData($array)
+	{
+		if(!$array || !is_array($array))
 			return;
 
 		foreach($array as $key => $value){
 			$this->data_body[$key] = $value;
 		}
-
-		$this->data_body[$key] = $value;
 	}
 
-	// Funcionalidade que verifica se todas as datas necessárias foram preenchidas no header e no footer
-	private function verify_datas()
+	//* Funcionalidade que define alguma data qualquer do footer
+	protected function setFooterData($array)
 	{
-		$allDone = TRUE;
-		$why = array();
-		for($i = 0; $i < count($this->data_needed); $i++){
-			$key = $this->data_needed[$i];
-			if(!isset($this->data_header[$key]) && !isset($this->data_footer[$key])){
-				$allDone = FALSE;
-				$why[] = $key;
-			}
+		if(!$array || !is_array($array))
+			return;
+
+		foreach($array as $key => $value){
+			$this->data_footer[$key] = $value;
 		}
-		$this->ready_to_load = ($allDone === TRUE) ? TRUE : FALSE;
-		return $why;
 	}
 
-	// Funcionalidade que organiza tudo para que o menu seja abilitado
-	protected function setMenu()
+	//* Funcionalidade que define alguma data qualquer do header
+	protected function setHeaderData($array)
 	{
-		$this->load_menu = TRUE;
-		$this->setMenuCssFile();
+		if(!$array || !is_array($array))
+			return;
+
+		foreach($array as $key => $value){
+			$this->data_header[$key] = $value;
+		}
+	}
+
+	//* Funcionalidade que define alguma data qualquer do menu
+	protected function setNavData($array)
+	{
+		if(!$array || !is_array($array))
+			return;
+
+		foreach($array as $key => $value){
+			$this->data_nav[$key] = $value;
+		}
+	}
+
+	protected function stl($string)
+	{
+		if(!$string || !is_string($string))
+			return;
+
+		return base_url($string);
+	}
+
+	//! Define o ficheiro de css main do site
+	private function setMainCssFile()
+	{
+		$this->data_header['css']['main'] = base_url($this->assets_path.'/'.$this->css_path.'/'.$this->main_css_path.'.css');
+	}
+
+	//! Define o css do nav
+	private function setNavCssFile()
+	{
+		$this->data_header['css']['menu'] = base_url($this->assets_path.'/'.$this->css_path.'/'.$this->nav_css_path.'.css');
 	}
 }
