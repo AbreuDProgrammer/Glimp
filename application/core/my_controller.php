@@ -138,12 +138,15 @@ abstract class my_controller extends CI_Controller {
 		}
 	}
 
-	protected function stl($string)
+	//* Definir um novo link
+	protected function setLinkData($array)
 	{
-		if(!$string || !is_string($string))
+		if(!$array || !is_array($array))
 			return;
 
-		return base_url($string);
+		foreach($array as $key => $path){
+			$this->data_body['link'][$key] = base_url($path);
+		}
 	}
 
 	//! Define o ficheiro de css main do site

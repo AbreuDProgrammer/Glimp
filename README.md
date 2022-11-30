@@ -23,12 +23,10 @@ Para o programador, todo user têm de ter:
 1 - Uma session para identificar quando fez login e quando fez logout.
 2 - Um array de permissões para saber quais apps o user autorizou exibir.
 
-Todos os users têm ligações com outros users por meio de amizade, que pode ser dividida em:
-1 - Amizade normal, onde pode limitar o outro para ver apenas a atividade que permitir por pessoa.
-2 - Melhores amigos, que todas as permissões estão ligadas. Para isso um convite de melhor amigo tem de ser aceitado.
+Todos os users têm ligações com outros users por meio de amizade, onde podem limitar o outro para ver apenas a atividade que permitir.
 
 ## Friendship
-Todo user pode ter ilimitados amigos e 100 melhores amigos.
+Todo user pode ter ilimitados amigos.
 
 Para cada amigo o user tem um chat de conversa, que permite textos, imagens, vídeos, publicações de diferentes plataformas.
 

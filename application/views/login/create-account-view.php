@@ -22,6 +22,6 @@
         </form>
     </div>
     <div id="loginLinkDiv">
-        <p>Have an account? <a href="<?= $loginLink ?>">Log in!</a></p>
+        <p>Have an account? <a href="<?= $link['loginLink']; ?>">Log in!</a></p>
     </div>
 </div>

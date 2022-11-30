@@ -5,6 +5,9 @@ class Home extends my_controller {
 
 	public function index()
 	{
+		// Carrega os modelos
+		$this->load->model('posts_model');
+
 		// Define um titulo
 		$title = 'Rain';
 		$this->setTitle($title);

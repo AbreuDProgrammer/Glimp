@@ -3,16 +3,17 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Login extends my_controller {
 
+	private $login_css = 'loginStyle';
+
 	public function index()
 	{
 		$title = 'Login';
 		$this->setTitle($title);
 
-		$css_file = array('loginStyle');
-		$this->setCssFiles($css_file);
+		$this->setCssFiles($this->login_css);
 
-		$data = array('createAccountLink' => $this->stl('create_account'));
-		$this->setData($data);
+		$data = array('createAccountLink' => 'create_account');
+		$this->setLinkData($data);
 
 		$view = 'login/login-view';
 		$this->load_views($view);
@@ -23,11 +24,10 @@ class Login extends my_controller {
 		$title = 'Create Account';
 		$this->setTitle($title);
 
-		$css_file = array('loginStyle');
-		$this->setCssFiles($css_file);
+		$this->setCssFiles($this->login_css);
 
-		$data = array('loginLink' => $this->stl('login'));
-		$this->setData($data);
+		$data = array('loginLink' => 'login');
+		$this->setLinkData($data);
 
 		$view = 'login/create-account-view';
 		$this->load_views($view);
