@@ -18,7 +18,7 @@ abstract class my_controller extends CI_Controller {
 	private $data_footer = array();
 
 	// Configs para paths
-	private $includes_path = 'includes';
+	private $includes_path = 'comuns';
 	private $include_header = 'header';
 	private $include_nav = 'menu';
 	private $include_footer = 'footer';
@@ -37,6 +37,9 @@ abstract class my_controller extends CI_Controller {
 
 		// Instancia as funcionalidades de ancoras
 		$this->load->helper('url');
+
+		// Cria os arrays multidimensionais
+		$this->create_data_arrays();
 
 		// Define os ficheiros de css main do site
 		$this->setMainCssFile();
@@ -71,8 +74,8 @@ abstract class my_controller extends CI_Controller {
 		if(!$array || !is_array($array))
 			return;
 
-		foreach($array as $key => $path){
-			$this->data_header['css'][$key] = base_url($this->assets_path.'/'.$this->css_path.'/'.$path.'.css');
+		foreach($array as $path){
+			$this->data_header['css'][] = base_url($this->assets_path.'/'.$this->css_path.'/'.$path.'.css');
 		}
 	}
 
@@ -82,8 +85,8 @@ abstract class my_controller extends CI_Controller {
 		if(!$array || !is_array($array))
 			return;
 
-		foreach($array as $key => $path){
-			$this->data_header['js'][$key] = base_url($this->assets_path.'/'.$this->js_path.'/'.$path.'.js');
+		foreach($array as $path){
+			$this->data_header['js'][] = base_url($this->assets_path.'/'.$this->js_path.'/'.$path.'.js');
 		}
 	}
 
@@ -152,12 +155,20 @@ abstract class my_controller extends CI_Controller {
 	//! Define o ficheiro de css main do site
 	private function setMainCssFile()
 	{
-		$this->data_header['css']['main'] = base_url($this->assets_path.'/'.$this->css_path.'/'.$this->main_css_path.'.css');
+		$this->data_header['css'][] = base_url($this->assets_path.'/'.$this->css_path.'/'.$this->main_css_path.'.css');
 	}
 
 	//! Define o css do nav
 	private function setNavCssFile()
 	{
-		$this->data_header['css']['menu'] = base_url($this->assets_path.'/'.$this->css_path.'/'.$this->nav_css_path.'.css');
+		$this->data_header['css'][] = base_url($this->assets_path.'/'.$this->css_path.'/'.$this->nav_css_path.'.css');
+	}
+
+	//! Cria os arrays multidimensionais
+	private function create_data_arrays()
+	{
+		$this->data_header['css'] = array();
+		$this->data_header['js'] = array();
+		$this->data_header['link'] = array();
 	}
 }
