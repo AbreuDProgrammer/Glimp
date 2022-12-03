@@ -11,6 +11,9 @@ html, body, div
     margin: 0;
     border: 0;
     padding: 0;
+
+    background-color: black;
+    color: white;
 }
 
 html, body
