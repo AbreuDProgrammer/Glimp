@@ -6,7 +6,7 @@ class Home extends my_controller {
 	public function index()
 	{
 		// Carrega os modelos
-		$this->load->model('posts_model');
+		$this->load->model('users_model');
 
 		// Define um titulo
 		$title = 'Rain';
@@ -19,6 +19,8 @@ class Home extends my_controller {
 		// Define as variaveis passadas para a view
 		$data = array();
 		$this->setData($data);
+		
+		print_r($this->users_model->getWhere());
 
 		// Prepara a view para o menu
 		$this->setMenu();

@@ -1,8 +1,3 @@
-/** 
- * Tabelas captalizadas com primeira letra maiúscula
- * Todas as colunas separadas por _ 
- */
-
 /* Tabela dos users */
 CREATE TABLE Users (
   user_id int(11), /* Id único de cada user AI */
@@ -18,7 +13,7 @@ CREATE TABLE Users (
   logs_details text, /* Histórico de logins e logouts array json_encode */
   apps_permissions text, /* Permissões que o user liberou para com outros apps array json_encode */
   configs text, /* Configurações dos users sobre qualquer definição salva array json_encode */
-  PRIMARY KEY(userId)
+  PRIMARY KEY(user_id)
 );
 
 /** 
@@ -29,7 +24,7 @@ CREATE TABLE Users (
 CREATE TABLE UserBlocks (
   user_id_sender int(11), /* Id do user que fez o block */
   user_id_blocked int(11), /* Id do user que foi bloqueado */
-  block_status varchar(80), /* O status do block (blocked, accessible) */
+  block_status varchar(80) /* O status do block (blocked, accessible) */
 );
 
 /** 
@@ -40,14 +35,14 @@ CREATE TABLE UserBlocks (
 CREATE TABLE GroupBlocks (
   user_id_sender int(11), /* Id do user que fez o block */
   group_id_blocked int(11), /* Id do grupo que foi bloqueado */
-  block_status varchar(80), /* O status do block (blocked, accessible) */
+  block_status varchar(80) /* O status do block (blocked, accessible) */
 );
 
 /* Tabela que controla todo login e logout dos users */
 CREATE TABLE Logs (
   user_id_log int(11), /* Id do user que fez o login */
   when_logged_in datetime, /* O dia e a hora em que o user fez o login */
-  when_logged_out datetime, /* O dia e a hora em que o user fez o logout */
+  when_logged_out datetime /* O dia e a hora em que o user fez o logout */
 );
 
 /**
@@ -107,16 +102,24 @@ CREATE TABLE ReadMessages (
 /**
  * Os grupos podem fazer publicações entre eles como no facebook
  * Os grupos têm um lider owner e podem ter outros adm
- * Od grupos têm um chat em que todos estão inclusos
+ * Os grupos têm um chat em que todos estão inclusos
  */
 CREATE TABLE Groups (
   group_id int(11), /* Id do grupo AI */
   owner_id int(11), /* Id do user que criou o grupo */
   adm_ids text, /* Ids dos users que receberam permissões de adm */
   group_description text, /* Descrição do grupo */
-  group_status varchar(80), /* Status do grpo (publico, privado) */
   when_started datetime, /* O dia e a hora em que o grupo foi criado */
   PRIMARY KEY(group_id)
+);
+
+/**
+ * Configurações do grupo
+ */
+CREATE TABLE GroupConfig (
+  group_config_id int(11), /* O grupo referente as configurações */
+  group_visible boolean, /* Define se é possível ver o grupo por qualquer user */
+  posts_visible boolean /* Define se os posts do grupo são visíveis */
 );
 
 /* Controla todos os membros dos grupo */ 
@@ -181,7 +184,7 @@ CREATE TABLE Comments (
 CREATE TABLE CommentsLikes (
   comment_id_liked int(11), /* O Id do comentario relacionado */
   user_id_liked int(11), /* O Id do user que deu o like */
-  time_liked datetime, /* Quando o comentario foi curtido */
+  time_liked datetime /* Quando o comentario foi curtido */
 );
 
 /**
@@ -201,7 +204,7 @@ CREATE TABLE Posts (
 CREATE TABLE PostsLikes (
   post_id_liked int(14), /* O Id do post relacionado */
   user_id_liked int(11), /* O Id do user que deu o like */
-  time_liked datetime, /* Quando o post foi curtido */
+  time_liked datetime /* Quando o post foi curtido */
 );
 
 /**
@@ -225,7 +228,7 @@ CREATE TABLE Events (
 CREATE TABLE EventMembers (
   event_id int(11), /* O Id do evento */
   member_event_id int(11), /* O Id do user que é membro do evento */
-  when_joined datetime /* A hora que o user entrou no evento */
+  when_joined datetime, /* A hora que o user entrou no evento */
   PRIMARY KEY(event_id)
 );
 

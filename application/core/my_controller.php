@@ -5,9 +5,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 // com funções padronizadas e úteis
 abstract class my_controller extends CI_Controller {
 
-	// Design Pattern Iterator
-	protected $iterator;
-
 	// Variavel que verifica se a pagina tem menu abilitado
 	private bool $load_nav = FALSE;
 
@@ -46,6 +43,9 @@ abstract class my_controller extends CI_Controller {
 
 		// Define os ficheiros de css main do site
 		$this->setMainCssFile();
+
+		// Cria o titulo da pagina
+		$this->setTitle();
 	}
 
 	//* Funcionalidade que carrega as views padrões em todas as paginas mais a view do path passado
