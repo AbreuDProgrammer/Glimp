@@ -1,5 +1,5 @@
 /** 
- * Tables captalizadas com primeira letra maiúscula
+ * Tabelas captalizadas com primeira letra maiúscula
  * Todas as colunas separadas por _ 
  */
 
@@ -114,6 +114,7 @@ CREATE TABLE Groups (
   owner_id int(11), /* Id do user que criou o grupo */
   adm_ids text, /* Ids dos users que receberam permissões de adm */
   group_description text, /* Descrição do grupo */
+  group_status varchar(80), /* Status do grpo (publico, privado) */
   when_started datetime, /* O dia e a hora em que o grupo foi criado */
   PRIMARY KEY(group_id)
 );
@@ -133,44 +134,128 @@ CREATE TABLE GroupsAdm (
 );
 
 /**
- * Controla os convites para fazer parte do grupo 
- * Os users podem ser convidados a fazer parte do grupo
- * Se o grupo é privado apenas os adm podem pedir para outros users entrarem
- * Não é possivel convidar alguém que ainda não aceitou ou recusou um convite
+ * Controla os pedidos para fazer parte do grupo privado
+ * Apenas os adm podem aceitar
+ * Não é possivel pedir para um grupo que ainda não aceitou ou recusou um convite
+ */
+CREATE TABLE GroupsRequest (
+  group_request_id int(11), /* Id do convite que foi enviado */
+  user_id_sender int(11), /* Id do user que fez o convite */
+  group_id_asked int(11), /* Id do grupo que recebeu o convite */
+  when_requested datetime, /* Quando pediu para entrar */
+  request_description varchar(255), /* Uma descrição opcional do convite */
+  request_status varchar(80), /* O status do convite (waiting, refused, accepted) */
+  PRIMARY KEY(group_request_id)
+);
+
+/**
+ * Controla os convites para fazer parte do grupo privado
+ * Apenas os adm podem convidar alguém
+ * Não é possivel pedir para um user que ainda não aceitou ou recusou um convite
  */
 CREATE TABLE GroupsInvite (
-  invite_id int(11), /* Id do convite que foi enviado */
+  group_invite_id int(11), /* Id do convite que foi enviado */
   user_id_sender int(11), /* Id do user que fez o convite */
+  group_id_asked int(11), /* Id do grupo que recebeu o convite para fazer parte */
   user_id_recipient int(11), /* Id do user que recebeu o convite */
-  when_invited datetime, /* Quando foi convidado */
+  when_invited datetime, /* Quando pediu para entrar */
   invite_description varchar(255), /* Uma descrição opcional do convite */
   invite_status varchar(80), /* O status do convite (waiting, refused, accepted) */
-  PRIMARY KEY(invite_id)
+  PRIMARY KEY(group_invite_id)
 );
 
+/**
+ * Os comentarios podem ser curtidos
+ * Os comentários têm uma lista de likes que podem ser vistas por todos
+ * Comentários podem ser apagados pelo(s) dono(s) da publicação ou pelo dono do comentario
+ */
 CREATE TABLE Comments (
-  commentId int(11), 
-  message text, 
-  time_sent datetime, 
-  num_likes int(11), 
-  usersIdsLiked text, 
-  PRIMARY KEY(commentId)
+  comment_id int(11), /* O Id AI do comentario */
+  comment_message text, /* A mensagem desse comentario */
+  post_id_commented int(14), /* O post em que foi comentado */
+  time_sent datetime, /* A hora que foi comentado */
+  PRIMARY KEY(comment_id)
 );
 
+/* Tabela que relaciona os comentarios com os likes */
+CREATE TABLE CommentsLikes (
+  comment_id_liked int(11), /* O Id do comentario relacionado */
+  user_id_liked int(11), /* O Id do user que deu o like */
+  time_liked datetime, /* Quando o comentario foi curtido */
+);
+
+/**
+ * Tabela de todos os posts 
+ * Os posts podem ser texto, imagem ou video
+ * Para o começo da app vou usar somente o de mensagem
+ */
 CREATE TABLE Posts (
-  postId int(11), 
-  message text, 
-  time_sent datetime, 
-  num_likes int(11), 
-  usersIdsLiked text, 
-  PRIMARY KEY(postId)
+  post_id int(14), /* O Id do post */
+  owner_post_id int(11), /* O Id do user que fez o post */
+  post_message text, /* O texto do post */
+  time_sent datetime, /* Quando foi publicado */
+  PRIMARY KEY(post_id)
 );
 
+/* Tabela que relaciona os posts com os likes */
+CREATE TABLE PostsLikes (
+  post_id_liked int(14), /* O Id do post relacionado */
+  user_id_liked int(11), /* O Id do user que deu o like */
+  time_liked datetime, /* Quando o post foi curtido */
+);
+
+/**
+ * Tabela que controla os eventos
+ * Eventos são criados por users e podem pertencer a grupos
+ * Eventos criados que pertencem a grupos avisam a todos os membros desse evento
+ * O(s) dono(s) do grupo aceitam ou não o evento pertencer ao grupo, podem altera-lo e deleta-lo
+ * Eventos particulares podem ser públicos ou privados, e pode conter mais membros apenas ao evento sem a necessidade de um grupo
+ * Impossivel alterar um evento depois de ter acontecido
+ */
 CREATE TABLE Events (
-  eventId int(11), 
-  description text, 
-  event_date datetime, 
-  membersIds text, 
-  leaderId int(11), 
-  PRIMARY KEY(eventId)
+  event_id int(11), /* O Id do evento */
+  event_description text, /* Uma descrição do evento */
+  event_date datetime, /* O dia que o evento irá acontecer */
+  owner_event_id int(11), /* O Id do user que criou o evento */
+  group_id_belongs int(11), /* Se o evento pertence a um grupo indicará o Id desse grupo */
+  PRIMARY KEY(event_id)
+);
+
+/* Tabela que relaciona os membros de um evento privado */
+CREATE TABLE EventMembers (
+  event_id int(11), /* O Id do evento */
+  member_event_id int(11), /* O Id do user que é membro do evento */
+  when_joined datetime /* A hora que o user entrou no evento */
+  PRIMARY KEY(event_id)
+);
+
+/**
+ * Controla os pedidos para entrar em um evento 
+ * Quando é pedido para entrar quero saber quem pediu e para qual evento
+ * Eventos em grupos é necessário que o user faça parte do grupo
+ */
+CREATE TABLE EventRequest (
+  event_request_id int(11), /* Id do convite que foi pedido para entrar */
+  user_id_sender int(11), /* Id do user que fez o convite */
+  event_id_asked int(11), /* Id do evento que pediu para participar */
+  when_requested datetime, /* Quando pediu para entrar */
+  request_description varchar(255), /* Uma descrição opcional do convite */
+  request_status varchar(80), /* O status do convite (waiting, refused, accepted) */
+  PRIMARY KEY(event_request_id)
+);
+
+/**
+ * Controla os pedidos convidando alguém para entrar num evento 
+ * Quando se convida alguém é preciso saber quem convidou, quem foi convidado e qual o evento
+ * Eventos em grupos é necessário que o user faça parte do grupo
+ */
+CREATE TABLE EventInvite (
+  event_invite_id int(11), /* Id do convite que foi enviado */
+  user_id_sender int(11), /* Id do user que fez o convite */
+  event_id_asked int(11), /* Id do evento que pediu para entrar */
+  user_id_recipient int(11), /* Id do user que recebeu o convite */
+  when_invited datetime, /* Quando pediu para entrar */
+  invite_description varchar(255), /* Uma descrição opcional do convite */
+  invite_status varchar(80), /* O status do convite (waiting, refused, accepted) */
+  PRIMARY KEY(event_invite_id)
 );
