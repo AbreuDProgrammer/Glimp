@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Login extends my_controller {
+class Login extends My_controller {
 
 	private $login_css = 'loginStyle';
 

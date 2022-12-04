@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Home extends my_controller {
+class Home extends My_controller {
 
 	public function index()
 	{
@@ -19,8 +19,6 @@ class Home extends my_controller {
 		// Define as variaveis passadas para a view
 		$data = array();
 		$this->setData($data);
-		
-		print_r($this->users_model->getWhere());
 
 		// Prepara a view para o menu
 		$this->setMenu();

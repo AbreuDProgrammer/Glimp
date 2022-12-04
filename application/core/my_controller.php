@@ -3,7 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 // Classe Main Controller para ser herdada por todos os controladores
 // com funções padronizadas e úteis
-abstract class my_controller extends CI_Controller {
+abstract class My_controller extends CI_Controller {
 
 	// Variavel que verifica se a pagina tem menu abilitado
 	private bool $load_nav = FALSE;
@@ -15,16 +15,15 @@ abstract class my_controller extends CI_Controller {
 	private $data_footer = array();
 
 	// Configs para paths
-	private $includes_path = 'includes';
-	private $include_header = 'header';
-	private $include_nav = 'menu';
-	private $include_footer = 'footer';
-
-	private $assets_path = 'assets';
-	private $css_path = 'css';
-	private $js_path = 'js';
-	private $main_css_path = 'mainStyle';
-	private $nav_css_path = 'navStyle';
+	private const INCLUDES_PATH = 'includes';
+	private const INCLUDE_HEADER = 'header';
+	private const INCLUDE_NAV = 'menu';
+	private const INCLUDE_FOOTER = 'footer';
+	private const ASSETS_PATH = 'assets';
+	private const CSS_PATH = 'css';
+	private const JS_PATH = 'js';
+	private const MAIN_CSS_PATH = 'mainStyle';
+	private const NAV_CSS_PATH = 'navStyle';
 
 	//! Contrutor que carrega as funcionalidades de urls e adiciona um css padrão a todas as paginas
 	public function __construct()
@@ -52,14 +51,14 @@ abstract class my_controller extends CI_Controller {
 	//* as variaveis usadas nas views são carregadas por meio de funcionalidades
 	protected function load_views($path, $return = FALSE)
 	{
-		$this->load->view($this->includes_path.'/'.$this->include_header, $this->data_header);
+		$this->load->view(My_controller::INCLUDES_PATH.'/'.My_controller::INCLUDE_HEADER, $this->data_header);
 
 		if($this->load_nav)
-			$this->load->view($this->includes_path.'/'.$this->include_nav, $this->data_nav);
+			$this->load->view(My_controller::INCLUDES_PATH.'/'.My_controller::INCLUDE_NAV, $this->data_nav);
 
 		$this->load->view($path, $this->data_body, $return);
 
-		$this->load->view($this->includes_path.'/'.$this->include_footer, $this->data_footer);
+		$this->load->view(My_controller::INCLUDES_PATH.'/'.My_controller::INCLUDE_FOOTER, $this->data_footer);
 	}
 
 	//* Funcionalidade que define o titulo da pagina
@@ -78,7 +77,7 @@ abstract class my_controller extends CI_Controller {
 			return;
 
 		foreach($array as $path){
-			$this->data_header['css'][] = base_url($this->assets_path.'/'.$this->css_path.'/'.$path.'.css');
+			$this->data_header['css'][] = base_url(My_controller::ASSETS_PATH.'/'.My_controller::CSS_PATH.'/'.$path.'.css');
 		}
 	}
 
@@ -89,7 +88,7 @@ abstract class my_controller extends CI_Controller {
 			return;
 
 		foreach($array as $path){
-			$this->data_header['js'][] = base_url($this->assets_path.'/'.$this->js_path.'/'.$path.'.js');
+			$this->data_header['js'][] = base_url(My_controller::ASSETS_PATH.'/'.My_controller::JS_PATH.'/'.$path.'.js');
 		}
 	}
 
@@ -158,13 +157,13 @@ abstract class my_controller extends CI_Controller {
 	//! Define o ficheiro de css main do site
 	private function setMainCssFile()
 	{
-		$this->data_header['css'][] = base_url($this->assets_path.'/'.$this->css_path.'/'.$this->main_css_path.'.css');
+		$this->data_header['css'][] = base_url(My_controller::ASSETS_PATH.'/'.My_controller::CSS_PATH.'/'.My_controller::MAIN_CSS_PATH.'.css');
 	}
 
 	//! Define o css do nav
 	private function setNavCssFile()
 	{
-		$this->data_header['css'][] = base_url($this->assets_path.'/'.$this->css_path.'/'.$this->nav_css_path.'.css');
+		$this->data_header['css'][] = base_url(My_controller::ASSETS_PATH.'/'.My_controller::CSS_PATH.'/'.My_controller::NAV_CSS_PATH.'.css');
 	}
 
 	//! Cria os arrays multidimensionais
