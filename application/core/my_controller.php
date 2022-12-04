@@ -18,7 +18,7 @@ abstract class my_controller extends CI_Controller {
 	private $data_footer = array();
 
 	// Configs para paths
-	private $includes_path = 'comuns';
+	private $includes_path = 'includes';
 	private $include_header = 'header';
 	private $include_nav = 'menu';
 	private $include_footer = 'footer';
@@ -165,17 +165,6 @@ abstract class my_controller extends CI_Controller {
 	private function setNavCssFile()
 	{
 		$this->data_header['css'][] = base_url($this->assets_path.'/'.$this->css_path.'/'.$this->nav_css_path.'.css');
-<<<<<<< HEAD
-	}
-
-	//! Cria os arrays multidimensionais
-	private function create_data_arrays()
-	{
-		$this->data_header['css'] = array();
-		$this->data_header['js'] = array();
-		$this->data_header['link'] = array();
-=======
->>>>>>> d27a33cf0edb39f6fbb18acb82da6348b3284489
 	}
 
 	//! Cria os arrays multidimensionais
