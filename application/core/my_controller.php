@@ -42,9 +42,6 @@ abstract class My_controller extends CI_Controller {
 
 		// Define os ficheiros de css main do site
 		$this->setMainCssFile();
-
-		// Cria o titulo da pagina
-		$this->setTitle();
 	}
 
 	//* Funcionalidade que carrega as views padrões em todas as paginas mais a view do path passado
