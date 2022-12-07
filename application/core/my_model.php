@@ -5,12 +5,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 // com funções padronizadas e úteis
 abstract class My_model extends CI_Model {
 
-	// Variavel que define uma tabela para o modelo
-	protected $table;
-
-    // Variavel que define um id
-    protected $id_column;
-
     // Where clauses consts
     public const LESS_THAN = '<';
     public const GREATER_THAN = '>';
@@ -26,12 +20,26 @@ abstract class My_model extends CI_Model {
 	{
 		// Carrega a database
 		$this->load->database();
-
-        // Define uma tabela para o modelo
-		$this->table = $this->table_name();
 	}
 
-    //! Função para selecionar a tabela que o modelo irá trabalhar
-    protected abstract function table_name();
-    
+    protected function get($table, $where_array = NULL)
+    {
+        if(!$where_array)
+        {
+            $query = $this->db->get($table);
+            return $query->result_array();
+        }
+
+        $query = $this->db->get_where($table, $where_array);
+        return $query->row_array();
+    }
+
+    protected function insert($table, $data_array)
+    {
+        if(empty($data_array))
+            return;
+
+        $insert_query = $this->db->insert($table, $data_array);
+        return $insert_query;
+    }
 }

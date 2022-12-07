@@ -42,6 +42,9 @@ abstract class My_controller extends CI_Controller {
 
 		// Define os ficheiros de css main do site
 		$this->setMainCssFile();
+
+		// Carrega os modelos
+		$this->load_model();
 	}
 
 	//* Funcionalidade que carrega as views padrões em todas as paginas mais a view do path passado
@@ -68,14 +71,19 @@ abstract class My_controller extends CI_Controller {
 	}
 
 	//* Adiciona ficheiros de css ao header
-	protected function setCssFiles($array)
+	protected function setCssFiles($file)
 	{
-		if(!$array || !is_array($array))
+		if(!$file)
 			return;
 
-		foreach($array as $path){
-			$this->data_header['css'][] = base_url(My_controller::ASSETS_PATH.'/'.My_controller::CSS_PATH.'/'.$path.'.css');
-		}
+		if(is_array($file))
+			foreach($file as $path)
+				$this->data_header['css'][] = base_url(My_controller::ASSETS_PATH.'/'.My_controller::CSS_PATH.'/'.$path.'.css');
+				
+		elseif(is_string($file))
+			$this->data_header['css'][] = base_url(My_controller::ASSETS_PATH.'/'.My_controller::CSS_PATH.'/'.$file.'.css');
+		
+		return;
 	}
 
 	//* Adiciona um ficheiro de js ao header

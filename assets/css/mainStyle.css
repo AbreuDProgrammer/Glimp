@@ -12,7 +12,7 @@ html, body, div
     border: 0;
     padding: 0;
 
-    background-color: black;
+    background-color: #303030;
     color: white;
 }
 
@@ -26,4 +26,9 @@ input
 {
     padding: 1em;
     border-radius: 0.5em;
+}
+
+a
+{
+    color: aqua;
 }
