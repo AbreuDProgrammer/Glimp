@@ -14,6 +14,9 @@ abstract class My_controller extends CI_Controller {
 	private $data_body = array();
 	private $data_footer = array();
 
+	// Variavel que verifica se o user está loggado
+	private $is_logged = false;
+
 	// Configs para paths
 	private const INCLUDES_PATH = 'includes';
 	private const INCLUDE_HEADER = 'header';
@@ -25,11 +28,14 @@ abstract class My_controller extends CI_Controller {
 	private const MAIN_CSS_PATH = 'mainStyle';
 	private const NAV_CSS_PATH = 'navStyle';
 
-	//! Contrutor que carrega as funcionalidades de urls e adiciona um css padrão a todas as paginas
+	// Contrutor que carrega as funcionalidades de urls e adiciona um css padrão a todas as paginas
 	public function __construct()
 	{
 		// Chama o construtor do CI_Controller
 		parent::__construct();
+		
+		// Chama as variaveis de login
+		session_start();
 
 		// Instancia as funcionalidades de ancoras
 		$this->load->helper('url');
@@ -47,8 +53,33 @@ abstract class My_controller extends CI_Controller {
 		$this->load_model();
 	}
 
-	//* Funcionalidade que carrega as views padrões em todas as paginas mais a view do path passado
-	//* as variaveis usadas nas views são carregadas por meio de funcionalidades
+	//? Funcionalidade para carregar o modelo do controller
+	abstract protected function load_model();
+
+	/**
+	 * Funcionalidade que todos os sites buscam para criar a parte grafica
+	 * Css e Variaveis passadas como array associativos porque podem existir mais do que 
+	 * um ficheiro de css e mais do que uma variavel
+	 */
+	protected function create_site_details(String $title, Array $css, Array $variables, String $view): void
+	{
+		// Define um titulo para a pagina
+		$this->setTitle($title);
+
+		// Carrega o array de css's
+		$this->setCssFiles($css);
+
+		// Carrega as variaveis usadas no body do site
+		$this->setLinkData($variables);
+
+		// Carrega as views
+		$this->load_views($view);
+	}
+
+	/** 
+	 * Funcionalidade que carrega as views padrões em todas as paginas mais a view do path passado
+	 * as variaveis usadas nas views são carregadas por meio de funcionalidades
+	 */
 	protected function load_views($path, $return = FALSE)
 	{
 		$this->load->view(My_controller::INCLUDES_PATH.'/'.My_controller::INCLUDE_HEADER, $this->data_header);
@@ -61,7 +92,7 @@ abstract class My_controller extends CI_Controller {
 		$this->load->view(My_controller::INCLUDES_PATH.'/'.My_controller::INCLUDE_FOOTER, $this->data_footer);
 	}
 
-	//* Funcionalidade que define o titulo da pagina
+	// Funcionalidade que define o titulo da pagina
 	protected function setTitle($title = 'Undefined title')
 	{
 		if(!$title || !is_string($title))
@@ -70,7 +101,7 @@ abstract class My_controller extends CI_Controller {
 		$this->data_header['title'] = $title;
 	}
 
-	//* Adiciona ficheiros de css ao header
+	// Adiciona ficheiros de css ao header
 	protected function setCssFiles($file)
 	{
 		if(!$file)
@@ -86,7 +117,7 @@ abstract class My_controller extends CI_Controller {
 		return;
 	}
 
-	//* Adiciona um ficheiro de js ao header
+	// Adiciona um ficheiro de js ao header
 	protected function setJsFiles($array)
 	{
 		if(!$array || !is_array($array))
@@ -97,14 +128,21 @@ abstract class My_controller extends CI_Controller {
 		}
 	}
 
-	//* Funcionalidade que organiza tudo para que o menu seja abilitado
+	// Funcionalidade que organiza tudo para que o menu seja abilitado
 	protected function setMenu()
 	{
 		$this->load_nav = TRUE;
 		$this->setNavCssFile();
+		$this->setNavLinksFile();
 	}
 
-	//* Funcionalidade que define alguma data qualquer da pagina
+	// Funcionalidade para enviar para a nav os links
+	private function setNavLinksFile()
+	{
+		$this->data_nav['logout'] = base_url('logout');
+	}
+
+	// Funcionalidade que define alguma data qualquer da pagina
 	protected function setData($array)
 	{
 		if(!$array || !is_array($array))
@@ -115,7 +153,7 @@ abstract class My_controller extends CI_Controller {
 		}
 	}
 
-	//* Funcionalidade que define alguma data qualquer do footer
+	// Funcionalidade que define alguma data qualquer do footer
 	protected function setFooterData($array)
 	{
 		if(!$array || !is_array($array))
@@ -126,7 +164,7 @@ abstract class My_controller extends CI_Controller {
 		}
 	}
 
-	//* Funcionalidade que define alguma data qualquer do header
+	// Funcionalidade que define alguma data qualquer do header
 	protected function setHeaderData($array)
 	{
 		if(!$array || !is_array($array))
@@ -137,7 +175,7 @@ abstract class My_controller extends CI_Controller {
 		}
 	}
 
-	//* Funcionalidade que define alguma data qualquer do menu
+	// Funcionalidade que define alguma data qualquer do menu
 	protected function setNavData($array)
 	{
 		if(!$array || !is_array($array))
@@ -148,7 +186,7 @@ abstract class My_controller extends CI_Controller {
 		}
 	}
 
-	//* Definir um novo link
+	// Definir um novo link
 	protected function setLinkData($array)
 	{
 		if(!$array || !is_array($array))
@@ -159,23 +197,55 @@ abstract class My_controller extends CI_Controller {
 		}
 	}
 
-	//! Define o ficheiro de css main do site
+	// Funcionalidade que retorna se o user está loggado ou não
+	protected function is_logged()
+	{
+		return $this->is_logged;
+	}
+
+	// Funcionalidade que define que o user está loggado
+	protected function user_logged_in()
+	{
+		$this->is_logged = true;
+	}
+
+	// Funcionalidade que define que o user não está loggado
+	protected function user_logged_out()
+	{
+		$this->is_logged = false;
+	}
+
+	// Define o ficheiro de css main do site
 	private function setMainCssFile()
 	{
 		$this->data_header['css'][] = base_url(My_controller::ASSETS_PATH.'/'.My_controller::CSS_PATH.'/'.My_controller::MAIN_CSS_PATH.'.css');
 	}
 
-	//! Define o css do nav
+	// Define o css do nav
 	private function setNavCssFile()
 	{
 		$this->data_header['css'][] = base_url(My_controller::ASSETS_PATH.'/'.My_controller::CSS_PATH.'/'.My_controller::NAV_CSS_PATH.'.css');
 	}
 
-	//! Cria os arrays multidimensionais
+	// Cria os arrays multidimensionais
 	private function create_data_arrays()
 	{
 		$this->data_header['css'] = array();
 		$this->data_header['js'] = array();
 		$this->data_header['link'] = array();
+	}
+
+	// Troca de controlador
+	protected function go_to($action)
+	{
+		header('Location: '.$action);
+	}
+
+	// Funcionalidade de logout aqui para poder ser acedida por outros controladores
+	protected function logout_action()
+	{
+		print_r($_SESSION);
+		session_unset();
+		print_r($_SESSION);
 	}
 }

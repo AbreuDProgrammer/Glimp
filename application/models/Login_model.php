@@ -14,18 +14,25 @@ class Login_model extends My_model {
         return $username_query;
     }
 
-    public function create_account($username, $password)
+    public function create_account($user)
     {
-        $data = array(
-            'username' => $username,
-            'password' => $password
-        );
+        if(!isset($user['username']) || !isset($user['password']))
+            return false;
         
-        $create_query = $this->insert('Users', $data);
+        $password_input = $user['password'];
+        $password_hashed = $this->PasswordHash->HashPassword($password_input);
+        $user['password'] = $password_hashed;
+
+        $create_query = $this->insert('Users', $user);
 
         if(!$create_query)
             return false;
 
         return $create_query;
+    }
+
+    public function logout()
+    {
+        
     }
 }

@@ -20,6 +20,9 @@ abstract class My_model extends CI_Model {
 	{
 		// Carrega a database
 		$this->load->database();
+
+        // Carrega o PasswordHash
+        $this->load->helper('PasswordHash_helper');
 	}
 
     protected function get($table, $where_array = NULL)

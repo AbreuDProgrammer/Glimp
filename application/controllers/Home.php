@@ -5,9 +5,6 @@ class Home extends My_controller {
 
 	public function index()
 	{
-		// Carrega os modelos
-		$this->load->model('users_model');
-
 		// Define um titulo
 		$title = 'Rain';
 		$this->setTitle($title);
@@ -26,5 +23,11 @@ class Home extends My_controller {
 		// Implementa todas as views
 		$view = 'home/home-view';
 		$this->load_views($view);
+	}
+
+	//! Funcionalidade que carrega o modelo
+	protected function load_model()
+	{
+		$this->load->model('Home_model');
 	}
 }

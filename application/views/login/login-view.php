@@ -18,6 +18,6 @@
         </form>
     </div>
     <div id="createAccountLinkDiv">
-        <p>Doesn't have an account? <a href="<?= $link['createAccountLink']; ?>">Create one!</a></p>
+        <p>Don't have an account? <a href="<?= $link['createAccountLink']; ?>">Create one!</a></p>
     </div>
 </div>

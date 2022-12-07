@@ -4,4 +4,5 @@
     <div>Search</div>
     <div>Friends</div>
     <div>Profile</div>
+    <div><a href="<?= $logout ?>">Log out</a></div>
 </div>
