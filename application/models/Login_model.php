@@ -19,9 +19,11 @@ class Login_model extends My_model {
         if(!isset($user['username']) || !isset($user['password']))
             return false;
         
-        $password_input = $user['password'];
-        $password_hashed = $this->PasswordHash->HashPassword($password_input);
-        $user['password'] = $password_hashed;
+        /**
+         * $password_input = $user['password'];
+         * $password_hashed = $this->PasswordHash->HashPassword($password_input);
+         * $user['password'] = $password_hashed;
+         */
 
         $create_query = $this->insert('Users', $user);
 
