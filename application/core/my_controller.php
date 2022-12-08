@@ -244,8 +244,6 @@ abstract class My_controller extends CI_Controller {
 	// Funcionalidade de logout aqui para poder ser acedida por outros controladores
 	protected function logout_action()
 	{
-		print_r($_SESSION);
 		session_unset();
-		print_r($_SESSION);
 	}
 }

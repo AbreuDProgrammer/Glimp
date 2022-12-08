@@ -44,10 +44,6 @@ class Login extends My_controller {
 	// Pagina para o logout
 	public function logout()
 	{
-		// Verifica se o user está loggado
-		if(!$this->verify_login())
-			return;
-		
 		$this->logout_action();
 
 		$this->go_to('login');
@@ -68,17 +64,18 @@ class Login extends My_controller {
 		if(!$_POST || !isset($_POST['username']) || !isset($_POST['password']))
 			return;
 
-		$username = $_POST['username'];
-		$password = $_POST['password'];
+		$user = array(
+			'username' => $_POST['username'],
+			'password' => $_POST['password']
+		);
 
-		$username_query = $this->Login_model->login($username, $password);
-		if(!$username_query)
+		$login_query = $this->Login_model->login($user);
+
+		if(!$login_query)
 			return;
 
-		$_SESSION['username'] = $username_query['username'];
-		$_SESSION['password'] = $username_query['password'];
+		$this->set_session($login_query);
 
-		$this->is_logged = true;
 		$this->go_to('home');
 	}
 
@@ -105,19 +102,17 @@ class Login extends My_controller {
 		if(!$create_query)
 			return false;
 
-		$this->account_created($user);
-		$this->is_logged = true;
+		$this->set_session($user);
+
 		$this->go_to('home');
 	}
 
-	// Funcionalidade para fazer o login quando a conta é criada
-	private function account_created($user)
+	// Funcionalidade para criar as variaveis de login
+	private function set_session($user)
 	{
-		if(!isset($user['username']) || !isset($user['password']))
-			return;
-		
-		$_SESSION['username'] = $user['username'];
-		$_SESSION['password'] = $user['password'];
+		foreach($user as $key => $data)
+			$_SESSION[$key] = $data;
+		$this->user_logged_in();
 	}
 
 	// Funcionalidade que carrega o modelo
