@@ -10,7 +10,6 @@ CREATE TABLE Users (
   birthday date, /* Data do aniversário */
   description text, /* Descrição do user */
   session_id int, /* Sessão salva quando iniciado em algum browser */
-  logs_details text, /* Histórico de logins e logouts array json_encode */
   apps_permissions text, /* Permissões que o user liberou para com outros apps array json_encode */
   configs text, /* Configurações dos users sobre qualquer definição salva array json_encode */
   PRIMARY KEY(user_id)

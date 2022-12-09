@@ -30,17 +30,23 @@ final class My_Login
      * Funcionalidade executada quando o user dá login
      * Já prepara toda a classe de uma vez
      */
-    public function signed_in($user)
+    public function signed_in($user): void
     {
         $this->is_logged = TRUE;
-        $this->set_session($user);
+        $this->set_user($user);
+        $this->set_session();
+    }
+
+    public function set_user($user)
+    {
+        $this->user = new User($user);
     }
 
     /**
      * É chamado quando o user cria a conta
      * Apenas executa a função de login 
      */
-    public function signed_up($user)
+    public function signed_up($user): void
     {
         $this->signed_in($user);
     }
@@ -53,9 +59,12 @@ final class My_Login
 	}
 
     // Quarda a informação do user
-	private function set_session($user)
+	private function set_session(): void
 	{
-		foreach($user as $key => $data)
+        if(!$this->user)
+            return;
+            
+		foreach($this->user as $key => $data)
 			$_SESSION[$key] = $data;
 	}
 
