@@ -5,24 +5,14 @@ class Home extends My_controller {
 
 	public function index()
 	{
-		// Define um titulo
+		$this->set_nav();
+
+		// Define as variaveis usadas no site e cria-o
 		$title = 'Rain';
-		$this->setTitle($title);
-
-		// Define o ficheiro de css da pagina
-		$css_file = array('homeStyle');
-		$this->setCssFiles($css_file);
-
-		// Define as variaveis passadas para a view
+		$css = array('homeStyle');
 		$data = array();
-		$this->setData($data);
-
-		// Prepara a view para o menu
-		$this->setMenu();
-
-		// Implementa todas as views
 		$view = 'home/home-view';
-		$this->load_views($view);
+		$this->create_site_details($title, $css, $data, $view);
 	}
 
 	//! Funcionalidade que carrega o modelo

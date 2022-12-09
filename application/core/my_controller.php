@@ -33,12 +33,12 @@ abstract class My_controller extends CI_Controller {
 	{
 		// Chama o construtor do CI_Controller
 		parent::__construct();
-		
-		// Chama as variaveis de login
-		session_start();
 
 		// Instancia as funcionalidades de ancoras
 		$this->load->helper('url');
+		
+		// Chama as variaveis de login
+		session_start();
 
 		// Carrega o iterator
 		$this->load->library('my_iterator');
@@ -51,6 +51,12 @@ abstract class My_controller extends CI_Controller {
 
 		// Carrega os modelos
 		$this->load_model();
+
+		// Verifica se o user não está loggado e não está na pagina de login ou criação de conta volta para o login
+		if(!$this->verify_login() && $this->uri->segment(1) <> 'login' && $this->uri->segment(1) <> 'create_account'){
+			$this->go_to('login');
+			return;
+		}
 	}
 
 	//? Funcionalidade para carregar o modelo do controller
@@ -129,7 +135,7 @@ abstract class My_controller extends CI_Controller {
 	}
 
 	// Funcionalidade que organiza tudo para que o menu seja abilitado
-	protected function setMenu()
+	protected function set_nav()
 	{
 		$this->load_nav = TRUE;
 		$this->setNavCssFile();
@@ -245,5 +251,14 @@ abstract class My_controller extends CI_Controller {
 	protected function logout_action()
 	{
 		session_unset();
+	}
+
+	// Funcionalidade chamada no inicio dos sites para verificar se o user já está loggado
+	protected function verify_login()
+	{
+		// Verifica se o user está loggado
+		if(!isset($_SESSION) || $_SESSION == NULL)
+			return false;
+		return true;
 	}
 }

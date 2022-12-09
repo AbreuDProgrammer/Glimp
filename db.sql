@@ -1,6 +1,6 @@
 /* Tabela dos users */
 CREATE TABLE Users (
-  user_id int(11), /* Id único de cada user AI */
+  user_id int(11) AUTO_INCREMENT, /* Id único de cada user AI */
   username varchar(255), /* Username único de cada user, alterável */
   password varchar(255), /* Password sha256 com pelo menos 1 número e uma maiúscula */
   email varchar(255), /* Email único de cada user com verificação, alterável */
@@ -53,7 +53,7 @@ CREATE TABLE Logs (
  * Não é possivel fazer um pedido de amizade para o mesmo user novamente enquanto no waiting
  */
 CREATE TABLE Friendships (
-  friendship_id int(11), /* Id da ligação de amizade */
+  friendship_id int(11) AUTO_INCREMENT, /* Id da ligação de amizade */
   user_id_sender int(11), /* Id do user que enviou o pedido de amizade */
   user_id_recipient int(11), /* Id do user que recebeu o pedido de amizade */
   friendship_status varchar(80), /* Status da amizade (waiting, friends, best_friends, refused) */
@@ -67,7 +67,7 @@ CREATE TABLE Friendships (
  * As mensagens têm o Id do chat, a chave está no N
  */
 CREATE TABLE Chats (
-  chat_id int(11), /* Id da conversa que pode ser de amizade ou grupo */
+  chat_id int(11) AUTO_INCREMENT, /* Id da conversa que pode ser de amizade ou grupo */
   chat_type varchar(80), /* Tipo para diferenciar se é um chat de amizade ou de grupo */
   permissions text, /* Permissões da conversa array json_encode */
   PRIMARY KEY(chat_id)
@@ -78,7 +78,7 @@ CREATE TABLE Chats (
  * Para controlar quando foi recebida e lida por varios users existe outra tabela ReceivedMessages e ReadMessages
  */
 CREATE TABLE Messages (
-  message_id int(11), /* O Id AI da mensagem */
+  message_id int(11) AUTO_INCREMENT, /* O Id AI da mensagem */
   message_info text, /* A mensagem txt, img ou video do user json_encode */
   user_id_sender int(11), /* Id do user que enviou a mensagem */
   time_sent datetime, /* O ano, mês, dia, hora, minuto e segundo que a mensagem foi enviada */
@@ -105,7 +105,7 @@ CREATE TABLE ReadMessages (
  * Os grupos têm um chat em que todos estão inclusos
  */
 CREATE TABLE Groups (
-  group_id int(11), /* Id do grupo AI */
+  group_id int(11) AUTO_INCREMENT, /* Id do grupo AI */
   owner_id int(11), /* Id do user que criou o grupo */
   adm_ids text, /* Ids dos users que receberam permissões de adm */
   group_description text, /* Descrição do grupo */
@@ -173,7 +173,7 @@ CREATE TABLE GroupsInvite (
  * Comentários podem ser apagados pelo(s) dono(s) da publicação ou pelo dono do comentario
  */
 CREATE TABLE Comments (
-  comment_id int(11), /* O Id AI do comentario */
+  comment_id int(11) AUTO_INCREMENT, /* O Id AI do comentario */
   comment_message text, /* A mensagem desse comentario */
   post_id_commented int(14), /* O post em que foi comentado */
   time_sent datetime, /* A hora que foi comentado */
@@ -193,7 +193,7 @@ CREATE TABLE CommentsLikes (
  * Para o começo da app vou usar somente o de mensagem
  */
 CREATE TABLE Posts (
-  post_id int(14), /* O Id do post */
+  post_id int(14) AUTO_INCREMENT, /* O Id do post AI */
   owner_post_id int(11), /* O Id do user que fez o post */
   post_message text, /* O texto do post */
   time_sent datetime, /* Quando foi publicado */
@@ -216,7 +216,7 @@ CREATE TABLE PostsLikes (
  * Impossivel alterar um evento depois de ter acontecido
  */
 CREATE TABLE Events (
-  event_id int(11), /* O Id do evento */
+  event_id int(11) AUTO_INCREMENT, /* O Id do evento AI*/
   event_description text, /* Uma descrição do evento */
   event_date datetime, /* O dia que o evento irá acontecer */
   owner_event_id int(11), /* O Id do user que criou o evento */

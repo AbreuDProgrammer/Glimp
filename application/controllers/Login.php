@@ -49,15 +49,6 @@ class Login extends My_controller {
 		$this->go_to('login');
 	}
 
-	// Funcionalidade chamada no inicio dos sites para verificar se o user já está loggado
-	private function verify_login()
-	{
-		// Verifica se o user está loggado
-		if(!isset($_SESSION) || $_SESSION == NULL)
-			return false;
-		return true;
-	}
-
 	// Funcionalidade para fazer o login quando enviado pelo POST
 	private function login_action()
 	{
