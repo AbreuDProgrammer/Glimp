@@ -1,8 +1,8 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Login extends My_controller {
-
+class Login extends My_controller 
+{
 	/**
 	 * É uma função obrigatória que carrega as funcionalidades usadas durante esse mesmo controller
 	 * Como a instancia dos models
@@ -10,7 +10,7 @@ class Login extends My_controller {
 	public function construtor(): void
 	{
 		// Verifica se o user está loggado
-		if($this->verify_login()){
+		if($this->login->is_logged()){
 			$this->go_to('home');
 			return;
 		}
@@ -19,7 +19,7 @@ class Login extends My_controller {
 		$this->load_model('Login_model');
 	}
 
-	public function index()
+	public function index(): void
 	{
 		// Envia as variaveis de link
 		$data = array(
@@ -30,11 +30,10 @@ class Login extends My_controller {
 		// Cria o view
 		$this->create_site_details('Login', array('loginStyle'), 'login/login-view', FALSE);
 
-		if($_POST)
-			$this->login_action();
+		$this->set_listener($this, 'login_action', 'POST');
 	}
 
-	public function create_account()
+	public function create_account(): void
 	{
 		$data = array(
 			'loginLink' => 'login'
@@ -44,41 +43,46 @@ class Login extends My_controller {
 		// Cria a view
 		$this->create_site_details('Create Account', array('loginStyle'), 'login/create-account-view');
 
-		if($_POST)
-			$this->create_account_action();
+		$this->set_listener($this, 'create_account_action', 'POST');
 	}
 	
-	// Pagina para o logout
-	public function logout()
+	public function logout(): void
 	{
-		$this->logout_action();
+		// Retira toda a atividade da classe login
+		$this->login->logout();
 
+		// Move o user para o login
 		$this->go_to('login');
 	}
 
 	// Funcionalidade para fazer o login quando enviado pelo POST
-	private function login_action()
+	protected function login_action(): void
 	{
 		if(!$_POST || !isset($_POST['username']) || !isset($_POST['password']))
 			return;
 
+		// Cria um array user para tentar fazer o login
 		$user = array(
 			'username' => $_POST['username'],
 			'password' => $_POST['password']
 		);
 
+		// Tenta fazer login, retorna null se não conseguir
 		$login_query = $this->Login_model->login($user);
 
+		// Se o login não for feito
 		if(!$login_query)
 			return;
-
-		$this->set_session($login_query);
-
+		
+		// Altera o objeto login caso tenho conseguido
+		$this->login->signed_in($login_query);
+		
+		// Move o user para a pagina inicial
 		$this->go_to('home');
 	}
 
 	// Funcionalidade para criar um user
-	private function create_account_action()
+	protected function create_account_action(): void
 	{
 		if(!$_POST || !isset($_POST['username']) || !isset($_POST['password']) || !isset($_POST['password_repeated']))
 			return;
@@ -98,18 +102,12 @@ class Login extends My_controller {
 		$create_query = $this->Login_model->create_account($user);
 		
 		if(!$create_query)
-			return false;
+			return;
 
-		$this->set_session($user);
+		// Altera o objeto login caso tenho conseguido
+		$this->login->signed_in($create_query);
 
+		// Move o user para a pagina inicial
 		$this->go_to('home');
-	}
-
-	// Funcionalidade para criar as variaveis de login
-	private function set_session($user)
-	{
-		foreach($user as $key => $data)
-			$_SESSION[$key] = $data;
-		$this->user_logged_in();
 	}
 }

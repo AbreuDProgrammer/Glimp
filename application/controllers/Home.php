@@ -3,21 +3,15 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Home extends My_controller {
 
-	public function index()
+	protected function construtor(): void
 	{
-		$this->set_nav();
-
-		// Define as variaveis usadas no site e cria-o
-		$title = 'Rain';
-		$css = array('homeStyle');
-		$data = array();
-		$view = 'home/home-view';
-		$this->create_site_details($title, $css, $data, $view);
+		// Carrega o modelo usado no Login
+		$this->load_model('Home_model');
 	}
 
-	//! Funcionalidade que carrega o modelo
-	protected function load_model()
+	public function index()
 	{
-		$this->load->model('Home_model');
+		// Cria a view
+		$this->create_site_details('Rain', array('homeStyle'), 'home/home-view', TRUE);
 	}
 }

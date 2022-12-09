@@ -28,6 +28,7 @@ abstract class My_controller extends CI_Controller
 	private const MAIN_CSS_PATH = 'mainStyle';
 	private const NAV_CSS_PATH = 'navStyle';
 
+	// Configs para configurações de variaveis
 	private const HEADER_DATA = 'data_header';
 	private const NAV_DATA = 'data_nav';
 	private const BODY_DATA = 'data_body';
@@ -43,26 +44,18 @@ abstract class My_controller extends CI_Controller
 		// Chama as variaveis de login
 		session_start();
 
-		// Instancia as funcionalidades de ancoras
-		$this->load->helper('url');
-
-		// Carrega o iterator com o apelido
-		$this->load->library('my_iterator', 'iterator');
-
-		// Carrega a biblioteca de validação de formularios
-		$this->load->library('form_validation');
-
-		// Carrega o helper do formulario
-		$this->load->helper('form');
+		// Carrega as bibliotecas e os helpers 
+		$this->load_libraries();
+		$this->load_helpers();
 
 		// Cria os arrays multidimensionais
 		$this->create_data_arrays();
-
+		
 		// Define os ficheiros de css main do site
 		$this->set_css_files(self::MAIN_CSS_PATH);
-
+		
 		// Verifica se o user não está loggado e não está na pagina de login ou criação de conta volta para o login
-		if(!$this->verify_login() && $this->uri->segment(1) <> 'login' && $this->uri->segment(1) <> 'create_account')
+		if(!$this->login->is_logged() && $this->uri->segment(1) <> 'login' && $this->uri->segment(1) <> 'create_account')
 			$this->go_to('login');
 
 		// Executa as funcionalidades essenciais do controller
@@ -96,12 +89,12 @@ abstract class My_controller extends CI_Controller
 		// Carrega o array de css's
 		$this->set_css_files($css);
 
-		// Carrega as views
-		$this->load_views($view);
-
 		// Verifica se a nav está ligada nesta pagina
 		if($nav)
 			$this->set_nav();
+
+		// Carrega as views
+		$this->load_views($view);
 	}
 
 	/** 
@@ -204,33 +197,6 @@ abstract class My_controller extends CI_Controller
 			$this->data_body['link'][$key] = base_url($path);
 	}
 
-	/**
-	 * Funcionalidades para controlar o login
-	 * São chamadas quando o modelo retornar que foi realizado o login
-	 */
-	protected function is_logged(): bool
-	{
-		return $this->is_logged;
-	}
-	protected function user_logged_in(): void
-	{
-		$this->is_logged = true;
-	}
-	protected function user_logged_out(): void
-	{
-		$this->is_logged = false;
-	}
-	protected function logout_action(): void
-	{
-		session_unset();
-	}
-	protected function verify_login(): bool
-	{
-		if(!isset($_SESSION) || $_SESSION == NULL)
-			return false;
-		return true;
-	}
-
 	// Cria os arrays multidimensionais
 	private function create_data_arrays(): void
 	{
@@ -239,9 +205,54 @@ abstract class My_controller extends CI_Controller
 		$this->data_header['link'] = array();
 	}
 
+	// Carrega todas as bibliotecas dos controllers
+	private function load_libraries(): void
+	{
+		// Carrega o iterator com o apelido
+		$this->load->library('my_iterator', null, 'iterator');
+
+		// Carrega a biblioteca de validação de formularios
+		$this->load->library('form_validation');
+
+		// Carrega a biblioteca do login
+		$this->load->library('my_login', null, 'login');
+	}
+
+	// Carrega todas os helpers dos controllers
+	private function load_helpers(): void
+	{
+		// Instancia as funcionalidades de ancoras
+		$this->load->helper('url');
+
+		// Carrega o helper do formulario
+		$this->load->helper('form');
+	}
+
 	// Troca de controlador
 	protected function go_to(String $action): void
 	{
 		header('Location: '.$action);
+	}
+
+	// Cria uma funcionalidade para POST e GET
+	protected function set_listener(My_controller $controller, String $action, String $method): void
+	{
+		// Se o metodo não existir retorna e se for privado da erro
+		if(!method_exists($controller, $action))
+			return;
+
+		// Cria uma variavel com os metodos possiveis e as suas respectivas variaveis
+		$ma = array(
+			'POST' => $_POST,
+			'GET' => $_GET
+		);
+
+		// Verifica se o metodo passado condiz com alguma key do array de metodos
+		if(!array_key_exists(strtoupper($method), $ma))
+			return;
+
+		// Verifica se a variavel do method é diferente de null e executa a funcionalidade
+		if($ma[$method])
+			$controller->{$action}();
 	}
 }
