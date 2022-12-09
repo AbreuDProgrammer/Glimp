@@ -69,7 +69,7 @@ class Login extends My_controller
 
 		// Tenta fazer login, retorna null se não conseguir
 		$login_query = $this->Login_model->login($user);
-
+		
 		// Se o login não for feito
 		if(!$login_query)
 			return;

@@ -63,8 +63,8 @@ final class My_Login
 	{
         if(!$this->user)
             return;
-            
-		foreach($this->user as $key => $data)
+
+		foreach($this->user->get_data() as $key => $data)
 			$_SESSION[$key] = $data;
 	}
 

@@ -11,6 +11,14 @@ final class User
     private $data = array();
 
     /**
+     * Salvo os tipo de variaveis
+     * Com relação as informações do user
+     */
+    private const STRING_DATA = array('username', 'password', 'email', 'email_extra', 'birthday', 'description');
+    private const INT_DATA = array('user_id', 'phone');
+    private const ARRAY_DATA = array('apps_permissions', 'configs');
+
+    /**
      * Funcionalidade construtor é responsavel
      * por verificar as informações e
      * por definir as informações do user
@@ -40,18 +48,15 @@ final class User
         $clean_data = array();
 
         // Todas as informações guardadas em string
-        $string_data_array = array('username', 'password', 'email', 'email_extra', 'birthday', 'description');
-        foreach($string_data_array as $key)
+        foreach(self::STRING_DATA as $key)
             if(is_string($data[$key]))
                 $clean_data[$key] = $data[$key];
 
-        $int_data_array = array('user_id', 'phone');
-        foreach($int_data_array as $key)
+        foreach(self::INT_DATA as $key)
             if(is_int($data[$key]))
                 $clean_data[$key] = $data[$key];
 
-        $array_data_array = array('apps_permissions', 'configs');
-        foreach($array_data_array as $key)
+        foreach(self::ARRAY_DATA as $key)
             if(is_string($data[$key])){
                 $json[$key] = json_decode($data[$key]);
                 if(is_array($json[$key]))
@@ -89,5 +94,9 @@ final class User
     public function set_apps_permissions(Array $data): Void { $this->data['apps_permissions'] = $data; }
     public function set_configs(Array $data): Void { $this->data['configs'] = $data; }
 
-
+    // Funcionalidade que retorna toda a data do user em array
+    public function get_data()
+    {
+        return $this->data;
+    }
 }
