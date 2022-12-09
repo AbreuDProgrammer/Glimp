@@ -3,20 +3,32 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Login extends My_controller {
 
-	public function index()
+	/**
+	 * É uma função obrigatória que carrega as funcionalidades usadas durante esse mesmo controller
+	 * Como a instancia dos models
+	 */
+	public function construtor(): void
 	{
 		// Verifica se o user está loggado
 		if($this->verify_login()){
 			$this->go_to('home');
 			return;
 		}
+
+		// Carrega o modelo usado no Login
+		$this->load_model('Login_model');
+	}
+
+	public function index()
+	{
+		// Envia as variaveis de link
+		$data = array(
+			'createAccountLink' => 'create_account'
+		);
+		$this->set_link_data($data);
 		
-		// Define as variaveis usadas no site e cria-o
-		$title = 'Login';
-		$css = array('loginStyle');
-		$data = array('createAccountLink' => 'create_account');
-		$view = 'login/login-view';
-		$this->create_site_details($title, $css, $data, $view);
+		// Cria o view
+		$this->create_site_details('Login', array('loginStyle'), 'login/login-view', FALSE);
 
 		if($_POST)
 			$this->login_action();
@@ -24,18 +36,13 @@ class Login extends My_controller {
 
 	public function create_account()
 	{
-		// Verifica se o user está loggado
-		if($this->verify_login()){
-			$this->go_to('home');
-			return;
-		}
+		$data = array(
+			'loginLink' => 'login'
+		);
+		$this->set_link_data($data);
 
-		// Define as variaveis usadas no site e cria-o
-		$title = 'Create Account';
-		$css = array('loginStyle');
-		$data = array('loginLink' => 'login');
-		$view = 'login/create-account-view';
-		$this->create_site_details($title, $css, $data, $view);
+		// Cria a view
+		$this->create_site_details('Create Account', array('loginStyle'), 'login/create-account-view');
 
 		if($_POST)
 			$this->create_account_action();
@@ -104,11 +111,5 @@ class Login extends My_controller {
 		foreach($user as $key => $data)
 			$_SESSION[$key] = $data;
 		$this->user_logged_in();
-	}
-
-	// Funcionalidade que carrega o modelo
-	protected function load_model()
-	{
-		$this->load->model('Login_model');
 	}
 }
