@@ -21,7 +21,7 @@ final class My_Login
     }
     
     // Retorna true or false se o user está logado
-    public function is_logged(): bool
+    public function is_logged(): Bool
 	{
 		return $this->is_logged;
 	}
@@ -30,14 +30,14 @@ final class My_Login
      * Funcionalidade executada quando o user dá login
      * Já prepara toda a classe de uma vez
      */
-    public function signed_in($user): void
+    public function signed_in($user): Void
     {
         $this->is_logged = TRUE;
         $this->set_user($user);
         $this->set_session();
     }
 
-    public function set_user($user)
+    public function set_user($user): Void
     {
         $this->user = new User($user);
     }
@@ -46,20 +46,20 @@ final class My_Login
      * É chamado quando o user cria a conta
      * Apenas executa a função de login 
      */
-    public function signed_up($user): void
+    public function signed_up($user): Void
     {
         $this->signed_in($user);
     }
      
     // Faz o logout do user
-	public function logout(): void
+	public function logout(): Void
 	{
 		session_unset();
 		$this->is_logged = FALSE;
 	}
 
     // Quarda a informação do user
-	private function set_session(): void
+	private function set_session(): Void
 	{
         if(!$this->user)
             return;

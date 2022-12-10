@@ -397,7 +397,7 @@ $config['sess_regenerate_destroy'] = FALSE;
 | Cookie Related Variables
 |--------------------------------------------------------------------------
 |
-| 'cookie_prefix'   = Set a cookie name prefix if you need to avoid collisions
+| 'cookie_prefix'   = Set a cookie name prefix if you need to aVoid collisions
 | 'cookie_domain'   = Set to .your-domain.com for site-wide cookies
 | 'cookie_path'     = Typically will be a forward slash
 | 'cookie_secure'   = Cookie will only be set if a secure HTTPS connection exists.

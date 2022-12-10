@@ -1,3 +1,4 @@
+<?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
 <div id="loginDiv">
     <div id="tittleDiv">
         <h1>Login</h1>
@@ -16,6 +17,9 @@
                 <input type="submit">
             </div>
         </form>
+    </div>
+    <div id="form_errors">
+        <?= $error['form_errors']; ?>
     </div>
     <div id="createAccountLinkDiv">
         <p>Don't have an account? <a href="<?= $link['createAccountLink']; ?>">Create one!</a></p>

@@ -26,7 +26,7 @@ abstract class My_model extends CI_Model {
         $this->PasswordHash = new PasswordHash(8, FALSE);
 	}
 
-    protected function get($table, $where_array = NULL)
+    protected function get($table, $where_array = NULL): Array
     {
         if(!$where_array)
         {
@@ -38,10 +38,10 @@ abstract class My_model extends CI_Model {
         return $query->row_array();
     }
 
-    protected function insert($table, $data_array)
+    protected function insert($table, $data_array): Array|Null
     {
         if(empty($data_array))
-            return;
+            return null;
 
         $insert_query = $this->db->insert($table, $data_array);
         return $insert_query;

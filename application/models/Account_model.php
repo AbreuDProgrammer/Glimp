@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Login_model extends My_model {
+class Account_model extends My_model {
 
     /**
      * Verifica se o username e password batem com um user

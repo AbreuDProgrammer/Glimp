@@ -1,3 +1,4 @@
+<?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
 <div id="createAccountDiv">
     <div id="tittleDiv">
         <h1>Create Account</h1>
@@ -13,13 +14,16 @@
                 <input type="password" id="passwordInput" name="password">
             </div>
             <div class="inputDiv">
-                <label class="formLabels" id="passwordLabel" for="password_repeated">Repeate the password:</label>
-                <input type="password" id="passwordInput" name="password_repeated">
+                <label class="formLabels" id="passwordConfirmLabel" for="password_confirm">Confirm the password:</label>
+                <input type="password" id="passwordConfirmInput" name="password_confirm">
             </div>
             <div class="submitDiv">
                 <input type="submit">
             </div>
         </form>
+    </div>
+    <div id="form_errors">
+        <?= $error['form_errors']; ?>
     </div>
     <div id="loginLinkDiv">
         <p>Have an account? <a href="<?= $link['loginLink']; ?>">Log in!</a></p>

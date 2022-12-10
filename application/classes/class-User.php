@@ -95,8 +95,5 @@ final class User
     public function set_configs(Array $data): Void { $this->data['configs'] = $data; }
 
     // Funcionalidade que retorna toda a data do user em array
-    public function get_data()
-    {
-        return $this->data;
-    }
+    public function get_data(): Array { return $this->data; }
 }

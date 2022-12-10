@@ -13,27 +13,27 @@ class My_Iterator implements Iterator
     private $position = 0;
     private $array = NULL;
 
-    public function current(): mixed
+    public function current(): Mixed
     {
         return $this->array[$this->position];
     }
-    public function key(): mixed
+    public function key(): Mixed
     {
         return $this->position;
     }
-    public function next(): void
+    public function next(): Void
     {
         $this->position++;
     }    
-    public function rewind(): void
+    public function rewind(): Void
     {
         $this->position = 0;
     }
-    public function valid(): bool
+    public function valid(): Bool
     {
         return isset($this->array[$this->position]);
     }
-    public function setArray($array): void
+    public function setArray($array): Void
     {
         $this->array = $array;
     }

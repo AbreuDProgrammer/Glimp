@@ -33,7 +33,8 @@ abstract class My_controller extends CI_Controller
 	private const NAV_DATA = 'data_nav';
 	private const BODY_DATA = 'data_body';
 	private const FOOTER_DATA = 'data_footer';
-	private const ARRAY_DATAS = array(self::HEADER_DATA, self::NAV_DATA, self::BODY_DATA, self::FOOTER_DATA);
+	private const ERROR_DATA = 'data_body';
+	private const ARRAY_DATAS = array(self::HEADER_DATA, self::NAV_DATA, self::BODY_DATA, self::FOOTER_DATA, self::ERROR_DATA);
 
 	// Contrutor que carrega as funcionalidades de urls e adiciona um css padrão a todas as paginas
 	public function __construct()
@@ -63,25 +64,14 @@ abstract class My_controller extends CI_Controller
 	}
 
 	// Funcionalidade para carregar os models e outras funcionalidades
-	abstract protected function construtor(): void;
-
-	// Funcionalidade para carregar o(s) modelo(s) do controller
-	protected function load_model(String|Array $model): void
-	{
-		if(is_array($model))
-			foreach($model as $path)
-				$this->load->model($path);
-
-		elseif(is_string($model))
-			$this->load->model($model);
-	}
+	abstract protected function construtor(): Void;
 
 	/**
 	 * Funcionalidade que todos os sites buscam para criar a parte grafica
 	 * Css e Variaveis passadas como array associativos porque podem existir mais do que 
 	 * um ficheiro de css e mais do que uma variavel
 	 */
-	protected function create_site_details(String $title, Array $css, String $view, Bool $nav = TRUE): void
+	protected function create_site_details(String $title, Array $css, String $view, Bool $nav = TRUE): Void
 	{
 		// Define um titulo para a pagina
 		$this->set_title($title);
@@ -102,7 +92,7 @@ abstract class My_controller extends CI_Controller
 	 * as variaveis usadas nas views são carregadas por meio de funcionalidades
 	 * O return é do code igniter para email
 	 */
-	protected function load_views(String $path, $return = FALSE): void
+	protected function load_views(String $path, $return = FALSE): Void
 	{
 		$this->load->view(self::INCLUDES_PATH.'/'.self::INCLUDE_HEADER, $this->data_header);
 
@@ -115,13 +105,13 @@ abstract class My_controller extends CI_Controller
 	}
 
 	// Funcionalidade que define o titulo da pagina
-	protected function set_title(String $title): void
+	protected function set_title(String $title): Void
 	{
 		$this->data_header['title'] = $title;
 	}
 
 	// Adiciona ficheiros de css ao header
-	protected function set_css_files(String|Array $file): void
+	protected function set_css_files(String|Array $file): Void
 	{
 		if(is_array($file))
 			foreach($file as $path)
@@ -132,7 +122,7 @@ abstract class My_controller extends CI_Controller
 	}
 
 	// Adiciona um ficheiro de js ao header
-	protected function set_js_files(String|Array $array): void
+	protected function set_js_files(String|Array $array): Void
 	{
 		if(is_array($file))
 			foreach($array as $path)
@@ -143,7 +133,7 @@ abstract class My_controller extends CI_Controller
 	}
 
 	// Funcionalidade que organiza tudo para que o menu seja abilitado
-	protected function set_nav(): void
+	protected function set_nav(): Void
 	{
 		$this->load_nav = TRUE;
 		$this->set_css_files(self::NAV_CSS_PATH);
@@ -153,7 +143,7 @@ abstract class My_controller extends CI_Controller
 	 * Funcionalidade que cria uma variavel para o lugar certo da view
 	 * É apenas chamada pela própria classe
 	 */
-	private function set_data(Array $array, String $where): void
+	private function set_data(Array $array, String $where): Void
 	{
 		if(!in_array($where, self::ARRAY_DATAS))
 			return;
@@ -167,19 +157,19 @@ abstract class My_controller extends CI_Controller
 	 * Cada uma envia para um lugar da view diferente
 	 * Feita 3 funcionalidades para simplificar o codigo na parte do controller
 	 */
-	protected function set_footer_data(Array $array): void
+	protected function set_footer_data(Array $array): Void
 	{
 		$this->set_data($array, self::FOOTER_DATA);
 	}
-	protected function set_body_data(Array $array): void
+	protected function set_body_data(Array $array): Void
 	{
 		$this->set_data($array, self::BODY_DATA);
 	}
-	protected function set_header_data(Array $array): void
+	protected function set_header_data(Array $array): Void
 	{
 		$this->set_data($array, self::HEADER_DATA);
 	}
-	protected function set_nav_data(Array $array): void
+	protected function set_nav_data(Array $array): Void
 	{
 		$this->set_data($array, self::NAV_DATA);
 	}
@@ -189,16 +179,28 @@ abstract class My_controller extends CI_Controller
 	 * Tem que ser um array associativo para saber o nome da varivel
 	 * Os links do header nav e footer são estáticos
 	 * array('name' => 'data');
-	 * $name = 'data';
+	 * $link[name] = 'data';
 	 */
-	protected function set_link_data(Array $array): void
+	protected function set_link_data(Array $array): Void
 	{
 		foreach($array as $key => $path)
 			$this->data_body['link'][$key] = base_url($path);
 	}
 
+	/**
+	 * Define uma nova variavel de erro
+	 * Tem que ser um array associativo para saber o nome da varivel
+	 * array('name' => 'data');
+	 * $error[name] = 'data';
+	 */
+	protected function set_error_data(Array $array): Void
+	{
+		foreach($array as $key => $error)
+			$this->data_body['error'][$key] = $error;
+	}
+
 	// Cria os arrays multidimensionais
-	private function create_data_arrays(): void
+	private function create_data_arrays(): Void
 	{
 		$this->data_header['css'] = array();
 		$this->data_header['js'] = array();
@@ -206,20 +208,20 @@ abstract class My_controller extends CI_Controller
 	}
 
 	// Carrega todas as bibliotecas dos controllers
-	private function load_libraries(): void
+	private function load_libraries(): Void
 	{
-		// Carrega o iterator com o apelido
+		// Carrega o iterator com o apelido de 'iterator'
 		$this->load->library('my_iterator', null, 'iterator');
 
-		// Carrega a biblioteca de validação de formularios
-		$this->load->library('form_validation');
+		// Carrega a biblioteca de validação de formularios com o apelido de 'form_validator'
+		$this->load->library('form_validation', null, 'form_validator');
 
-		// Carrega a biblioteca do login
+		// Carrega a biblioteca do login com o apelido de 'login'
 		$this->load->library('my_login', null, 'login');
 	}
 
 	// Carrega todas os helpers dos controllers
-	private function load_helpers(): void
+	private function load_helpers(): Void
 	{
 		// Instancia as funcionalidades de ancoras
 		$this->load->helper('url');
@@ -229,13 +231,13 @@ abstract class My_controller extends CI_Controller
 	}
 
 	// Troca de controlador
-	protected function go_to(String $action): void
+	protected function go_to(String $action): Void
 	{
 		header('Location: '.$action);
 	}
 
 	// Cria uma funcionalidade para POST e GET
-	protected function set_listener(My_controller $controller, String $action, String $method): void
+	protected function set_listener(My_controller $controller, String $action, String $method): Void
 	{
 		// Se o metodo não existir retorna e se for privado da erro
 		if(!method_exists($controller, $action))
