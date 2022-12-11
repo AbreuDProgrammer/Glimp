@@ -19,7 +19,7 @@
         </form>
     </div>
     <div id="form_errors">
-        <?= $error['form_errors']; ?>
+        <?= $error['form_error']; ?>
     </div>
     <div id="createAccountLinkDiv">
         <p>Don't have an account? <a href="<?= $link['createAccountLink']; ?>">Create one!</a></p>

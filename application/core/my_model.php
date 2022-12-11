@@ -14,7 +14,6 @@ abstract class My_model extends CI_Model {
     public const GREATER_THAN_OR_EQUAL_TO = '>=';
     public const LIKE = 'LIKE';
 
-
 	// Contrutor que carrega as funcionalidades de db e tables
 	public function __construct()
 	{
@@ -23,10 +22,10 @@ abstract class My_model extends CI_Model {
 
         // Carrega o PasswordHash
         $this->load->helper('PasswordHash_helper');
-        $this->PasswordHash = new PasswordHash(8, FALSE);
+        $this->PasswordHash = new PasswordHash(8);
 	}
 
-    protected function get($table, $where_array = NULL): Array
+    protected function get($table, $where_array = NULL): Array|Null
     {
         if(!$where_array)
         {
@@ -38,12 +37,19 @@ abstract class My_model extends CI_Model {
         return $query->row_array();
     }
 
-    protected function insert($table, $data_array): Array|Null
+    protected function insert($table, $data_array): Bool
     {
         if(empty($data_array))
-            return null;
+            return false;
 
         $insert_query = $this->db->insert($table, $data_array);
-        return $insert_query;
+        return $insert_query; // True se funcionou e false se falhou
+    }
+
+    protected function select($specifc_data, $table, $where_array): Array
+    {
+        $this->db->select($specifc_data);
+        $query = $this->db->get_where($table, $where_array);
+        return $query->result_array();
     }
 }

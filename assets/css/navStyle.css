@@ -1,6 +1,13 @@
 /* ------------------- Menu ------------------- */
 
-#menu 
+#nav 
 {
-    
+    position: absolute;
+    height: 5%;
+    width: 100%;
+    background-color: brown;
+    top: 0;    
+
+    justify-content: space-around;
+    align-items: center;
 }

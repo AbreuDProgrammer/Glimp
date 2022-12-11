@@ -16,7 +16,7 @@ final class My_Login
     public function __construct()
     {
         $user = $this->verify_login();
-        if($user)
+        if($user <> null)
             $this->signed_in($user);
     }
     
@@ -30,14 +30,14 @@ final class My_Login
      * Funcionalidade executada quando o user dá login
      * Já prepara toda a classe de uma vez
      */
-    public function signed_in($user): Void
+    public function signed_in(Array $user): Void
     {
         $this->is_logged = TRUE;
         $this->set_user($user);
         $this->set_session();
     }
 
-    public function set_user($user): Void
+    public function set_user(Array $user): Void
     {
         $this->user = new User($user);
     }
@@ -46,7 +46,7 @@ final class My_Login
      * É chamado quando o user cria a conta
      * Apenas executa a função de login 
      */
-    public function signed_up($user): Void
+    public function signed_up(Array $user): Void
     {
         $this->signed_in($user);
     }

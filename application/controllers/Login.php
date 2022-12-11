@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Login extends My_controller 
+class Login extends My_controller
 {
 	// Regras de logins
 	private const USERNAME_RULES = 'required|min_length[3]|max_length[12]';
@@ -38,8 +38,8 @@ class Login extends My_controller
 		$this->form_validator->set_rules('password', 'Password', self::PASSWORD_RULES);
 
 		// Variavel de erros
-		$this->form_validator->run() == FALSE ? $data['form_errors'] = validation_errors() : null;
-		$this->set_error_data($data);
+		$erro = $this->form_validator->run() == FALSE ? validation_errors() : null;
+		$this->set_error_data(array('form_error' => $erro));
 
 		// Envia as variaveis de link
 		$data = array(
@@ -49,7 +49,7 @@ class Login extends My_controller
 		
 		// Cria a view sem o menu
 		$this->create_site_details('Login', array('loginStyle'), 'login/login-view', FALSE);
-
+		
 		$this->set_listener($this, 'login_action', 'POST');
 	}
 	public function create_account(): Void
@@ -60,11 +60,11 @@ class Login extends My_controller
 		));
 		$this->form_validator->set_rules('password', 'Password', self::PASSWORD_RULES);
 		$this->form_validator->set_rules('password_confirm', 'Password Confirmed', self::PASSWORD_CONFIRMED_RULES);
-
+		
 		// Variavel de erros
-		$this->form_validator->run() == FALSE ? $data['form_errors'] = validation_errors() : null;
-		$this->set_error_data($data);
-
+		$erro = $this->form_validator->run() == FALSE ? validation_errors() : null;
+		$this->set_error_data(array('form_error' => $erro));
+		
 		// Envia as variaveis de link
 		$data = array(
 			'loginLink' => 'login'
@@ -73,7 +73,7 @@ class Login extends My_controller
 
 		// Cria a view sem o menu
 		$this->create_site_details('Create Account', array('loginStyle'), 'login/create-account-view', FALSE);
-
+		
 		$this->set_listener($this, 'create_account_action', 'POST');
 	}
 	public function logout(): Void
@@ -97,6 +97,9 @@ class Login extends My_controller
 			'password' => $_POST['password']
 		);
 
+		if(!$this->username_check($user['username']))
+			return;
+
 		// Tenta fazer login, retorna null se não conseguir
 		$login_query = $this->login_model->login($user);
 		
@@ -114,12 +117,12 @@ class Login extends My_controller
 	// Funcionalidade para criar um user
 	protected function create_account_action(): Void
 	{
-		if(!$_POST || !isset($_POST['username']) || !isset($_POST['password']) || !isset($_POST['password_confirmed']))
+		if(!$_POST || !isset($_POST['username']) || !isset($_POST['password']) || !isset($_POST['password_confirm']))
 			return;
 
 		$username = $_POST['username'];
 		$password = $_POST['password'];
-		$password_confirmed = $_POST['password_confirmed'];
+		$password_confirmed = $_POST['password_confirm'];
 
 		if($password <> $password_confirmed)
 			return;
@@ -134,8 +137,8 @@ class Login extends My_controller
 		if(!$create_query)
 			return;
 
-		// Altera o objeto login caso tenho conseguido
-		$this->login->signed_in($create_query);
+		// Altera o objeto login caso tenho conseguido criar
+		$this->login->signed_up($user);
 
 		// Move o user para a pagina inicial
 		$this->go_to('home');

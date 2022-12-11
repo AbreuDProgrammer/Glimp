@@ -23,7 +23,7 @@
         </form>
     </div>
     <div id="form_errors">
-        <?= $error['form_errors']; ?>
+        <?= $error['form_error']; ?>
     </div>
     <div id="loginLinkDiv">
         <p>Have an account? <a href="<?= $link['loginLink']; ?>">Log in!</a></p>

@@ -23,7 +23,7 @@ final class User
      * por verificar as informações e
      * por definir as informações do user
      */
-    public function __construct($data)
+    public function __construct(Array $data)
     {
         $user = $this->clean_data($data);
 
@@ -49,15 +49,15 @@ final class User
 
         // Todas as informações guardadas em string
         foreach(self::STRING_DATA as $key)
-            if(is_string($data[$key]))
+            if(isset($data[$key]) && is_string($data[$key]))
                 $clean_data[$key] = $data[$key];
 
         foreach(self::INT_DATA as $key)
-            if(is_int($data[$key]))
+            if(isset($data[$key]) && is_int($data[$key]))
                 $clean_data[$key] = $data[$key];
 
         foreach(self::ARRAY_DATA as $key)
-            if(is_string($data[$key])){
+            if(isset($data[$key]) && is_string($data[$key])){
                 $json[$key] = json_decode($data[$key]);
                 if(is_array($json[$key]))
                     $clean_data[$key] = $json[$key];
