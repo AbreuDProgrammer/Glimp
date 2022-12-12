@@ -110,13 +110,13 @@ class Login extends My_controller
 	protected function login_action(): Void
 	{
 		// Verifica se o username e a password estão enviadas e com as regras certas
-		if(!$_POST || !isset($_POST['username']) || !isset($_POST['password'])/* || $this->form_validator->run() == FALSE*/)
+		if(!$this->input->post() || !$this->input->post('username') || !$this->input->post('password') || $this->form_validator->run() == FALSE)
 			return;
 
 		// Cria um array user para tentar fazer o login
 		$user = array(
-			'username' => $_POST['username'],
-			'password' => $_POST['password']
+			'username' => $this->input->post('username'),
+			'password' => $this->input->post('password')
 		);
 
 		// Verifica o user na DB retorna null se não conseguir
@@ -136,12 +136,12 @@ class Login extends My_controller
 	// Funcionalidade para criar um user
 	protected function create_account_action(): Void
 	{
-		if(!$_POST || !isset($_POST['username']) || !isset($_POST['password']) || !isset($_POST['password_confirm']))
+		if(!$this->input->post() || !$this->input->post('username') || !$this->input->post('password') || !$this->input->post('password_confirm'))
 			return;
 
-		$username = $_POST['username'];
-		$password = $_POST['password'];
-		$password_confirmed = $_POST['password_confirm'];
+		$username = $this->input->post('username');
+		$password = $this->input->post('password');
+		$password_confirmed = $this->input->post('password_confirm');
 
 		if($password <> $password_confirmed)
 			return;

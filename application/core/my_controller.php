@@ -259,8 +259,8 @@ abstract class My_controller extends CI_Controller
 
 		// Cria uma variavel com os metodos possiveis e as suas respectivas variaveis
 		$ma = array(
-			'POST' => $_POST,
-			'GET' => $_GET
+			'POST' => $this->input->post(),
+			'GET' => $this->input->get()
 		);
 
 		// Verifica se o metodo passado condiz com alguma key do array de metodos (POST ou GET no $method)
