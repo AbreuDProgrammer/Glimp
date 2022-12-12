@@ -53,7 +53,7 @@ abstract class My_controller extends CI_Controller
 		$this->set_css_files(self::MAIN_CSS_PATH);
 		
 		// Verifica se o user não está loggado e não está na pagina de login ou criação de conta volta para o login
-		if(!$this->session->userdata('user_id') && $this->uri->segment(1) <> 'login' && $this->uri->segment(1) <> 'create_account')
+		if(!$this->session->userdata('username') && $this->uri->segment(1) <> 'login' && $this->uri->segment(1) <> 'create_account')
 			$this->go_to('login');
 
 		// Executa as funcionalidades essenciais do controller

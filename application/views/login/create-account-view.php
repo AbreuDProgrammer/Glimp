@@ -7,7 +7,7 @@
         <form method="post">
             <div class="inputDiv">
                 <label class="formLabels" id="usernameLabel" for="username">Username:</label>
-                <input type="text" id="usernameInput" name="username">
+                <input value="<?= set_value('username'); ?>" type="text" id="usernameInput" name="username">
             </div>
             <div class="inputDiv">
                 <label class="formLabels" id="passwordLabel" for="password">Password:</label>

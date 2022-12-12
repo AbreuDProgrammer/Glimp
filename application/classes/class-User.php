@@ -15,7 +15,7 @@ final class User
      * Com relação as informações do user
      */
     private const STRING_DATA = array('username', 'password', 'email', 'email_extra', 'birthday', 'description');
-    private const INT_DATA = array('user_id', 'phone');
+    private const INT_DATA = array('phone');
     private const ARRAY_DATA = array('apps_permissions', 'configs');
 
     /**
@@ -27,7 +27,6 @@ final class User
     {
         $user = $this->clean_data($data);
 
-        $this->data['user_id'] = $user['user_id'] ?? null;
         $this->data['username'] = $user['username'] ?? null;
         $this->data['password'] = $user['password'] ?? null;
         $this->data['email'] = $user['email'] ?? null;

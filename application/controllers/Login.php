@@ -16,7 +16,7 @@ class Login extends My_controller
 	public function construtor(): Void
 	{
 		// Verifica se o user está loggado ou se está na pagina de logout
-		if($this->session->userdata('user_id') && $this->uri->segment(1) <> 'logout'){
+		if($this->session->userdata('username') && $this->uri->segment(1) <> 'logout'){
 			$this->go_to('home');
 			return;
 		}
@@ -61,7 +61,7 @@ class Login extends My_controller
 		$this->create_site_details('Login', array('loginStyle'), 'login/login-view', FALSE);
 
 		// Se a funcionalidade foi executada e o user está logado
-		if($login_executed && $this->session->userdata('user_id'))
+		if($login_executed && $this->session->userdata('username'))
 			$this->go_to('home');
 	}
 
@@ -92,7 +92,7 @@ class Login extends My_controller
 		$this->create_site_details('Create Account', array('loginStyle'), 'login/create-account-view', FALSE);
 		
 		// Se a funcionalidade foi executada e o user está logado
-		if($account_creation_executed && $this->session->userdata('user_id'))
+		if($account_creation_executed && $this->session->userdata('username'))
 			$this->go_to('home');
 	}
 

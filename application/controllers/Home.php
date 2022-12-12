@@ -11,7 +11,7 @@ class Home extends My_controller {
 
 	public function index()
 	{
-		// Cria a view
-		$this->create_site_details('Rain', array('homeStyle'), 'home/home-view', TRUE);
+		// Cria a view 
+		$this->create_site_details('Rain', array('homeStyle'), 'home/home-view');
 	}
 }
