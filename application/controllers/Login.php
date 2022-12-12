@@ -76,7 +76,7 @@ class Login extends My_controller
 		// Variavel de erros
 		$erro = $this->form_validator->run() == FALSE ? validation_errors() : null;
 		$this->set_error_data(array('form_error' => $erro));
-		
+
 		// Envia as variaveis de link
 		$data = array(
 			'loginLink' => 'login'
@@ -86,7 +86,8 @@ class Login extends My_controller
 		// Cria a view sem o menu
 		$this->create_site_details('Create Account', array('loginStyle'), 'login/create-account-view', FALSE);
 		
-		$this->set_listener($this, 'create_account_action', 'POST');
+		if(!$erro)
+			$this->set_listener($this, 'create_account_action', 'POST');
 	}
 	public function logout(): Void
 	{
