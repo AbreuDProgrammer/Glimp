@@ -11,7 +11,7 @@ CREATE TABLE Users (
   session_id int, /* Sessão salva quando iniciado em algum browser */
   apps_permissions text, /* Permissões que o user liberou para com outros apps array json_encode */
   configs text, /* Configurações dos users sobre qualquer definição salva array json_encode */
-  PRIMARY KEY(user_id)
+  PRIMARY KEY(username)
 );
 
 /** 
