@@ -50,7 +50,8 @@ class Login extends My_controller
 		// Cria a view sem o menu
 		$this->create_site_details('Login', array('loginStyle'), 'login/login-view', FALSE);
 		
-		$this->set_listener($this, 'login_action', 'POST');
+		if(!$erro)
+			$this->set_listener($this, 'login_action', 'POST');
 	}
 	public function create_account(): Void
 	{
@@ -64,7 +65,7 @@ class Login extends My_controller
 		// Variavel de erros
 		$erro = $this->form_validator->run() == FALSE ? validation_errors() : null;
 		$this->set_error_data(array('form_error' => $erro));
-		
+
 		// Envia as variaveis de link
 		$data = array(
 			'loginLink' => 'login'
@@ -74,7 +75,8 @@ class Login extends My_controller
 		// Cria a view sem o menu
 		$this->create_site_details('Create Account', array('loginStyle'), 'login/create-account-view', FALSE);
 		
-		$this->set_listener($this, 'create_account_action', 'POST');
+		if(!$erro)
+			$this->set_listener($this, 'create_account_action', 'POST');
 	}
 	public function logout(): Void
 	{
@@ -96,9 +98,6 @@ class Login extends My_controller
 			'username' => $_POST['username'],
 			'password' => $_POST['password']
 		);
-
-		if(!$this->username_check($user['username']))
-			return;
 
 		// Tenta fazer login, retorna null se não conseguir
 		$login_query = $this->login_model->login($user);
