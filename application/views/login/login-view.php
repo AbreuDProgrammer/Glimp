@@ -7,7 +7,7 @@
         <form method="post">
             <div class="inputDiv">
                 <label class="formLabels" id="usernameLabel" for="username">Username:</label>
-                <input type="text" id="usernameInput" name="username">
+                <input value="<?= set_value('username'); ?>" type="text" id="usernameInput" name="username">
             </div>
             <div class="inputDiv">
                 <label class="formLabels" id="passwordLabel" for="password">Password:</label>
@@ -18,8 +18,8 @@
             </div>
         </form>
     </div>
-    <div id="form_errors">
-        <?= $error['form_error']; ?>
+    <div id="form_infos">
+        <?= $error['form_info']; ?>
     </div>
     <div id="createAccountLinkDiv">
         <p>Don't have an account? <a href="<?= $link['createAccountLink']; ?>">Create one!</a></p>

@@ -26,20 +26,34 @@ class Login extends My_controller
 	}
 
 	/**
-	 * São as funcionalidades que são chamadas 
-	 * para a inicialização de um site
-	 * sempre públicas e o nome da funcionalidade é
-	 * o nome do site nas rotas
+	 * Primeiro verifica se o login foi enviado para o Post, se sim
+	 * é retornado true e as funcionalidades são encaminhadas para o login, se não 
+	 * é feito as funcionalidades normais.
+	 * 
+	 * As funcionalidades da pagina normal são as definições das regras do form, 
+	 * a criação do link para a pagina de criação de conta e as views da pagina
+	 * 
+	 * Se o formulario já foi enviado é feito tudo igual a pagina normal mas é avisado que 
+	 * o login está errado
 	 */
 	public function index(): Void
 	{
+		// Testa se o login foi enviado
+		$was_sent = $this->set_listener($this, 'login_action', 'POST');
+
 		// Regras do formulários
 		$this->form_validator->set_rules('username', 'Username', self::USERNAME_RULES);
 		$this->form_validator->set_rules('password', 'Password', self::PASSWORD_RULES);
 
-		// Variavel de erros
-		$erro = $this->form_validator->run() == FALSE ? validation_errors() : null;
-		$this->set_error_data(array('form_error' => $erro));
+		if($this->form_validator->run() == FALSE && !$was_sent)
+		{
+			$info = validation_errors();
+		}
+		elseif($was_sent) // Se ainda não foi enviada a data para o login
+		{
+			$info = '<p class="success">'.$this->session->flashdata('login_info').'</p>';
+		}
+		$this->set_error_data(array('form_info' => $info));
 
 		// Envia as variaveis de link
 		$data = array(
@@ -49,8 +63,6 @@ class Login extends My_controller
 		
 		// Cria a view sem o menu
 		$this->create_site_details('Login', array('loginStyle'), 'login/login-view', FALSE);
-		
-		$this->set_listener($this, 'login_action', 'POST');
 	}
 	public function create_account(): Void
 	{
@@ -97,21 +109,23 @@ class Login extends My_controller
 			'password' => $_POST['password']
 		);
 
-		if(!$this->username_check($user['username']))
-			return;
-
 		// Tenta fazer login, retorna null se não conseguir
 		$login_query = $this->login_model->login($user);
 		
 		// Se o login não for feito
-		if(!$login_query)
+		if(!$login_query){
+			$this->session->set_flashdata('login_info', 'Either your email address or password were incorrect');
 			return;
+		}
 		
 		// Altera o objeto login caso tenho conseguido
 		$this->login->signed_in($login_query);
+
+		// Set da mensagem de login
+		$this->session->set_flashdata('login_info', 'Logged in!');
 		
 		// Move o user para a pagina inicial
-		$this->go_to('home');
+		//$this->go_to('home');
 	}
 
 	// Funcionalidade para criar um user

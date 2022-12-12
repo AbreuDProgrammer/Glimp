@@ -43,7 +43,7 @@ abstract class My_controller extends CI_Controller
 		parent::__construct();
 		
 		// Chama as variaveis de login
-		session_start();
+		//session_start();
 
 		// Carrega as bibliotecas e os helpers 
 		$this->load_libraries();
@@ -218,6 +218,9 @@ abstract class My_controller extends CI_Controller
 
 		// Carrega a biblioteca do login com o apelido de 'login'
 		$this->load->library('my_login', null, 'login');
+
+		// Carrega a biblioteca de sessão
+		$this->load->library('session');
 	}
 
 	// Carrega todas os helpers dos controllers
@@ -237,11 +240,11 @@ abstract class My_controller extends CI_Controller
 	}
 
 	// Cria uma funcionalidade para POST e GET
-	protected function set_listener(My_controller $controller, String $action, String $method): Void
+	protected function set_listener(My_controller $controller, String $action, String $method): Bool
 	{
 		// Se o metodo não existir retorna e se for privado da erro
 		if(!method_exists($controller, $action))
-			return;
+			return false;
 
 		// Cria uma variavel com os metodos possiveis e as suas respectivas variaveis
 		$ma = array(
@@ -251,10 +254,13 @@ abstract class My_controller extends CI_Controller
 
 		// Verifica se o metodo passado condiz com alguma key do array de metodos
 		if(!array_key_exists(strtoupper($method), $ma))
-			return;
+			return false;
 
 		// Verifica se a variavel do method é diferente de null e executa a funcionalidade
 		if($ma[$method])
 			$controller->{$action}();
+
+		// Retorna true para avisar que foi enviado a informação e a funcionalidade foi ativada
+		return true;
 	}
 }

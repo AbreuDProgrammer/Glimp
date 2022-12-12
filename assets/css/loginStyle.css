@@ -34,7 +34,13 @@
     justify-content: center;
 }
 
-#form_errors
+#form_infos
 {
     color: red;
+    margin: 1em;
+}
+
+.success 
+{
+    color: green;
 }
