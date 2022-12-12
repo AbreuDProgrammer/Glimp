@@ -291,13 +291,13 @@ abstract class My_controller extends CI_Controller
 	 */
 	protected function test_form(Bool $listener_response, String $flashdata_name): String|Null
 	{
-		// Verifica se existe algum erro no formulario
-		if($this->form_validator->run() == FALSE)
-			$info = validation_errors();
-
-		// Se o login_action já foi executado escreve a mensagem deixada pela funcionalidade
-		elseif($listener_response)
+		// Se o listener_response já foi executado escreve a mensagem deixada pela funcionalidade
+		if($listener_response)
 			$info = '<p class="info">'.$this->session->flashdata($flashdata_name).'</p>';
+
+		// Verifica se existe algum erro no formulario
+		elseif($this->form_validator->run() == FALSE)
+			$info = validation_errors();
 
 		// Caso não seja nenhum dos casos apenas deixa a mensagem null
 		else

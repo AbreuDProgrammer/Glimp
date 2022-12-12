@@ -42,9 +42,6 @@ class Account_model extends My_model
     {
         if(!isset($user['username']) || !isset($user['password']))
             return false;
-
-        if(verify_username($user['username']))
-            return false;
         
         $user['password'] = $this->PasswordHash->HashPassword($user['password']);
         $user['is_logged'] = TRUE;
@@ -55,17 +52,6 @@ class Account_model extends My_model
             return false;
 
         return $create_query; // Retorna true se funcionar e false se não
-    }
-
-    public function verify_username($username): Bool
-    {
-        // Verifica se o username já existe
-        $name_query = $this->select('username', 'Users', array('username' => $username));
-                
-        // Retorna se existir
-        if($name_query <> null)
-            return true;
-        return false;
     }
 
     /**

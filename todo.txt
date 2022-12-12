@@ -1,5 +1,0 @@
-Para usar:
-
-set_value
-classe_config
-library session

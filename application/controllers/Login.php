@@ -74,7 +74,7 @@ class Login extends My_controller
 		$this->form_validator->set_rules('password', 'Password', self::PASSWORD_RULES);
 		$this->form_validator->set_rules('password_confirm', 'Password Confirmed', self::PASSWORD_CONFIRMED_RULES);
 		
-		$account_creation_executed = $this->set_listener($this, 'create_account_action', 'POST');
+		$account_creation_executed = $this->set_listener($this, 'create_account_action', 'POST', $this->form_validator->run());
 
 		// Verifica se o formulario já foi enviado e retorna uma mensagem ao user
 		$info = $this->test_form($account_creation_executed, 'create_info');
@@ -90,7 +90,7 @@ class Login extends My_controller
 
 		// Cria a view sem o menu
 		$this->create_site_details('Create Account', array('loginStyle'), 'login/create-account-view', FALSE);
-
+		
 		// Se a funcionalidade foi executada e o user está logado
 		if($account_creation_executed && $this->session->userdata('user_id'))
 			$this->go_to('home');
