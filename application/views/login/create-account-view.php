@@ -22,8 +22,8 @@
             </div>
         </form>
     </div>
-    <div id="form_errors">
-        <?= $error['form_error']; ?>
+    <div id="form_infos">
+        <?= $error['form_info']; ?>
     </div>
     <div id="loginLinkDiv">
         <p>Have an account? <a href="<?= $link['loginLink']; ?>">Log in!</a></p>

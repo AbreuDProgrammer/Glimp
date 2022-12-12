@@ -15,8 +15,8 @@ class Login extends My_controller
 	 */
 	public function construtor(): Void
 	{
-		// Verifica se o user está loggado
-		if($this->login->is_logged()){
+		// Verifica se o user está loggado ou se está na pagina de logout
+		if($this->session->userdata('user_id') && $this->uri->segment(1) <> 'logout'){
 			$this->go_to('home');
 			return;
 		}
@@ -38,21 +38,17 @@ class Login extends My_controller
 	 */
 	public function index(): Void
 	{
-		// Testa se o login foi enviado
-		$was_sent = $this->set_listener($this, 'login_action', 'POST');
-
 		// Regras do formulários
 		$this->form_validator->set_rules('username', 'Username', self::USERNAME_RULES);
 		$this->form_validator->set_rules('password', 'Password', self::PASSWORD_RULES);
 
-		if($this->form_validator->run() == FALSE && !$was_sent)
-		{
-			$info = validation_errors();
-		}
-		elseif($was_sent) // Se ainda não foi enviada a data para o login
-		{
-			$info = '<p class="success">'.$this->session->flashdata('login_info').'</p>';
-		}
+		// Testa se o login foi enviado e verifica o formulario
+		$login_executed = $this->set_listener($this, 'login_action', 'POST', $this->form_validator->run());
+
+		// Verifica se o formulario já foi enviado e retorna uma mensagem ao user
+		$info = $this->test_form($login_executed, 'login_info');
+
+		// Apresenta essa mensagem
 		$this->set_error_data(array('form_info' => $info));
 
 		// Envia as variaveis de link
@@ -63,7 +59,12 @@ class Login extends My_controller
 		
 		// Cria a view sem o menu
 		$this->create_site_details('Login', array('loginStyle'), 'login/login-view', FALSE);
+
+		// Se a funcionalidade foi executada e o user está logado
+		if($login_executed && $this->session->userdata('user_id'))
+			$this->go_to('home');
 	}
+
 	public function create_account(): Void
 	{
 		// Regras do formulários
@@ -73,9 +74,13 @@ class Login extends My_controller
 		$this->form_validator->set_rules('password', 'Password', self::PASSWORD_RULES);
 		$this->form_validator->set_rules('password_confirm', 'Password Confirmed', self::PASSWORD_CONFIRMED_RULES);
 		
-		// Variavel de erros
-		$erro = $this->form_validator->run() == FALSE ? validation_errors() : null;
-		$this->set_error_data(array('form_error' => $erro));
+		$account_creation_executed = $this->set_listener($this, 'create_account_action', 'POST');
+
+		// Verifica se o formulario já foi enviado e retorna uma mensagem ao user
+		$info = $this->test_form($account_creation_executed, 'create_info');
+
+		// Apresenta essa mensagem
+		$this->set_error_data(array('form_info' => $info));
 
 		// Envia as variaveis de link
 		$data = array(
@@ -85,23 +90,27 @@ class Login extends My_controller
 
 		// Cria a view sem o menu
 		$this->create_site_details('Create Account', array('loginStyle'), 'login/create-account-view', FALSE);
-		
-		if(!$erro)
-			$this->set_listener($this, 'create_account_action', 'POST');
+
+		// Se a funcionalidade foi executada e o user está logado
+		if($account_creation_executed && $this->session->userdata('user_id'))
+			$this->go_to('home');
 	}
+
 	public function logout(): Void
 	{
-		// Retira toda a atividade da classe login
-		$this->login->logout();
+		// Faz o logout do user
+		$this->logout_action();
 
 		// Move o user para o login
 		$this->go_to('login');
 	}
 
+
 	// Funcionalidade para fazer o login quando enviado pelo POST
 	protected function login_action(): Void
 	{
-		if(!$_POST || !isset($_POST['username']) || !isset($_POST['password']))
+		// Verifica se o username e a password estão enviadas e com as regras certas
+		if(!$_POST || !isset($_POST['username']) || !isset($_POST['password'])/* || $this->form_validator->run() == FALSE*/)
 			return;
 
 		// Cria um array user para tentar fazer o login
@@ -110,25 +119,20 @@ class Login extends My_controller
 			'password' => $_POST['password']
 		);
 
-		// Tenta fazer login, retorna null se não conseguir
+		// Verifica o user na DB retorna null se não conseguir
 		$login_query = $this->login_model->login($user);
-		
-		// Se o login não for feito
 		if(!$login_query){
 			$this->session->set_flashdata('login_info', 'Either your email address or password were incorrect');
 			return;
 		}
-		
-		// Altera o objeto login caso tenho conseguido
-		$this->login->signed_in($login_query);
 
+		// Faz o login
+		$this->session->set_userdata($login_query);
+		
 		// Set da mensagem de login
 		$this->session->set_flashdata('login_info', 'Logged in!');
-		
-		// Move o user para a pagina inicial
-		//$this->go_to('home');
 	}
-
+	 
 	// Funcionalidade para criar um user
 	protected function create_account_action(): Void
 	{
@@ -149,13 +153,30 @@ class Login extends My_controller
 
 		$create_query = $this->login_model->create_account($user);
 		
-		if(!$create_query)
+		if(!$create_query){
+			$this->session->set_flashdata('create_info', 'Server error');
 			return;
+		}
 
-		// Altera o objeto login caso tenho conseguido criar
-		$this->login->signed_up($user);
+		// Faz o login com as informação que o user acabou de criar
+		$this->session->set_userdata($user);
+		
+		// Set da mensagem de login
+		$this->session->set_flashdata('create_info', 'Account created!');
+	}
 
-		// Move o user para a pagina inicial
-		$this->go_to('home');
+	// Funcionalidade para executar o logout do user
+	protected function logout_action(): Void
+	{
+		// Pega toda a informação do user no session
+		$this->session->unset_userdata('__ci_last_regenerate');
+		$user = $this->session->userdata();
+		
+		// Altera todas as informações do user na db
+		$this->login_model->logout($user);
+
+		// Remove toda a informação do user na sessão
+		$keydata_array = array_keys($user);
+		$this->session->unset_userdata($keydata_array);
 	}
 }

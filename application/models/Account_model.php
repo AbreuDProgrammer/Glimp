@@ -23,6 +23,11 @@ class Account_model extends My_model
         // Verifica se as palavras passes são as mesmas
         if(!$this->PasswordHash->CheckPassword($user['password'], $username_query['password']))
             return false;
+
+        // Informa que o login foi feito
+        $user['is_logged'] = TRUE;
+        $this->db->where('user_id', $username_query['user_id']);
+        $this->db->update('Users', $user);
             
         // Retorna os dados da DB
         return $username_query;
@@ -31,6 +36,7 @@ class Account_model extends My_model
     /**
      * Cria o user para a DB
      * O ID é AI
+     * Set do is_logged para TRUE
      */
     public function create_account(Array $user): Bool
     {
@@ -40,9 +46,8 @@ class Account_model extends My_model
         if(verify_username($user['username']))
             return false;
         
-        $password_input = $user['password'];
-        $password_hashed = $this->PasswordHash->HashPassword($password_input);
-        $user['password'] = $password_hashed;
+        $user['password'] = $this->PasswordHash->HashPassword($user['password']);
+        $user['is_logged'] = TRUE;
 
         $create_query = $this->insert('Users', $user);
 
@@ -64,10 +69,13 @@ class Account_model extends My_model
     }
 
     /**
-     * Funcionalidade para a tabela 'Logs'
+     * Funcionalidade para a tabela 'Logs' e para o is_logged
      */
-    public function logout()
+    public function logout($user)
     {
-        
+        // Informa que o login foi feito para a table users
+        $user['is_logged'] = FALSE;
+        $this->db->where('user_id', $user['user_id']);
+        $this->db->update('Users', $user);
     }
 }
