@@ -38,9 +38,6 @@ abstract class My_controller extends CI_Controller
 	{
 		// Chama o construtor do CI_Controller
 		parent::__construct();
-		
-		// Chama as variaveis de login
-		//session_start();
 
 		// Carrega as bibliotecas e os helpers 
 		$this->load_libraries();
@@ -286,7 +283,7 @@ abstract class My_controller extends CI_Controller
 
 	/**
 	 * Essa funcionalidade é suposto para ser utilizada quando o formulario tem
-	 * uma verificação já feita
+	 * uma verificação já feita para escrever a mensagem
 	 * 
 	 * O listener_response já verifica o formulario, mas quando o site é ativo pela primeira vez
 	 * o listener_response sempre é false, já que nada foi passado ainda.
@@ -296,19 +293,25 @@ abstract class My_controller extends CI_Controller
 	 * Essa verificação só existe para que a DB não seja ativada sem propósito, já que
 	 * se os dados não passarem nem as regras com certeza não existem
 	 */
-	protected function test_form(Bool $listener_response, String $flashdata_name): String|Null
+	protected function test_form(Bool $listener_response, String $flashdata_status, String $flashdata_name): String|Null
 	{
-		// Se o listener_response já foi executado escreve a mensagem deixada pela funcionalidade
-		if($listener_response)
-			$info = '<p class="info">'.$this->session->flashdata($flashdata_name).'</p>';
+		// Se o status está definido retorna a mensagem da tentativa
+		if($this->session->flashdata($flashdata_status) !== NULL){
+			$class = $this->session->flashdata($flashdata_status) == TRUE ? 'success' : 'error';
+			$info = '<p class="'.$class.'">'.$this->session->flashdata($flashdata_name).'</p>';
+			return $info;
+		}
 
-		// Verifica se existe algum erro no formulario
-		elseif($this->form_validator->run() == FALSE)
+		// Se não cumpriu com as regras retorna o erro
+		if($this->form_validator->run() == FALSE){
 			$info = validation_errors();
+			return $info;
+		}
 
-		// Caso não seja nenhum dos casos apenas deixa a mensagem null
-		else
+		// Se o listener_response ainda não executou a function então é null
+		if(!$listener_response){
 			$info = null;
-		return $info;
+			return $info;
+		}
 	}
 }

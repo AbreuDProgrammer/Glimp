@@ -20,12 +20,14 @@ abstract class My_model extends CI_Model {
 		// Carrega a database
 		$this->load->database();
 
-        // Carrega o PasswordHash
-        $this->load->helper('PasswordHash_helper');
-        $this->PasswordHash = new PasswordHash(8);
+        // Carrega os helpers que precisar
+        $this->constructor();
 	}
+    
+    // Funcionalidade para instanciar helper e outros
+    abstract function constructor();
 
-    protected function get(String $table, Array|Null $where_array = NULL): Array|Null
+    protected function get(String $table, Array $where_array = NULL): Array|Null
     {
         if(!$where_array)
         {
@@ -52,4 +54,10 @@ abstract class My_model extends CI_Model {
         $query = $this->db->get_where($table, $where_array);
         return $query->result_array();
     }
+
+    protected function get_by_key(String $primary_key_name, Mixed $key, String $table): Array|Null
+    {
+        $query = $this->db->get_where($table, array($primary_key_name => $key));
+        return $query;
+    }   
 }

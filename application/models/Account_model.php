@@ -3,6 +3,15 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Account_model extends My_model 
 {
+
+    // Funcionalidade construtora de cada model
+    public function constructor()
+    {
+        // Carrega o PasswordHash
+        $this->load->helper('PasswordHash_helper');
+        $this->PasswordHash = new PasswordHash(8);
+    }
+
     /**
      * Verifica se o username e password batem com um user
      * Retorna false se o user não existir ou se a palavra-passe não estiver certa
