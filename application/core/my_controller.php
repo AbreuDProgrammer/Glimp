@@ -38,9 +38,6 @@ abstract class My_controller extends CI_Controller
 	{
 		// Chama o construtor do CI_Controller
 		parent::__construct();
-		
-		// Chama as variaveis de login
-		//session_start();
 
 		// Carrega as bibliotecas e os helpers 
 		$this->load_libraries();

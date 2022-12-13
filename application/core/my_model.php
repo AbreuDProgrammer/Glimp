@@ -20,12 +20,14 @@ abstract class My_model extends CI_Model {
 		// Carrega a database
 		$this->load->database();
 
-        // Carrega o PasswordHash
-        $this->load->helper('PasswordHash_helper');
-        $this->PasswordHash = new PasswordHash(8);
+        // Carrega os helpers que precisar
+        $this->constructor();
 	}
 
-    protected function get($table, $where_array = NULL): Array|Null
+    // Funcionalidade para instanciar helper e outros
+    abstract function constructor();
+
+    protected function get(String $table, Array $where_array = NULL): Array|Null
     {
         if(!$where_array)
         {
@@ -37,7 +39,7 @@ abstract class My_model extends CI_Model {
         return $query->row_array();
     }
 
-    protected function insert($table, $data_array): Bool
+    protected function insert(String $table, Array $data_array): Bool
     {
         if(empty($data_array))
             return false;
@@ -46,10 +48,16 @@ abstract class My_model extends CI_Model {
         return $insert_query; // True se funcionou e false se falhou
     }
 
-    protected function select($specifc_data, $table, $where_array): Array
+    protected function select(String $specifc_data, String $table, Array $where_array): Array
     {
         $this->db->select($specifc_data);
         $query = $this->db->get_where($table, $where_array);
         return $query->result_array();
     }
+
+    protected function get_by_key(String $primary_key_name, Mixed $key, String $table): Array|Null
+    {
+        $query = $this->db->get_where($table, array($primary_key_name => $key));
+        return $query;
+    }   
 }
