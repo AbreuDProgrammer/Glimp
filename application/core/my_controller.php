@@ -291,16 +291,23 @@ abstract class My_controller extends CI_Controller
 	 */
 	protected function test_form(Bool $listener_response, String $flashdata_status, String $flashdata_name): String|Null
 	{
-		// Se o listener_response ainda não executou a function então é null
-		if(!$listener_response){
-			$info = null; // '<p class="info">'.$this->session->flashdata($flashdata_name).'</p>';
+		// Se o status está definido retorna a mensagem da tentativa
+		if($this->session->flashdata($flashdata_status) !== NULL){
+			$class = $this->session->flashdata($flashdata_status) == TRUE ? 'success' : 'error';
+			$info = '<p class="'.$class.'">'.$this->session->flashdata($flashdata_name).'</p>';
 			return $info;
 		}
 
-		// Aqui significa que a funcionalidade foi executada mas a tentativa falhou
-		$class = $this->session->flashdata($flashdata_status) == TRUE ? 'success' : 'error';
+		// Se não cumpriu com as regras retorna o erro
+		if($this->form_validator->run() == FALSE){
+			$info = validation_errors();
+			return $info;
+		}
 
-		$info = '<p class="'.$class.'">'.$this->session->flashdata($flashdata_name).'</p>';
-		return $info;
+		// Se o listener_response ainda não executou a function então é null
+		if(!$listener_response){
+			$info = null;
+			return $info;
+		}
 	}
 }

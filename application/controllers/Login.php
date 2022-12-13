@@ -62,7 +62,7 @@ class Login extends My_controller
 
 		// Se a funcionalidade foi executada e o user está logado
 		if($login_executed && $this->session->userdata('username'))
-			$this->go_to('home');
+			$this->go_to(base_url());
 	}
 
 	public function create_account(): Void
@@ -77,7 +77,7 @@ class Login extends My_controller
 		$account_creation_executed = $this->set_listener($this, 'create_account_action', 'POST', $this->form_validator->run());
 
 		// Verifica se o formulario já foi enviado e retorna uma mensagem ao user
-		$info = $this->test_form($account_creation_executed, 'create_info');
+		$info = $this->test_form($account_creation_executed, 'create_status', 'create_info');
 
 		// Apresenta essa mensagem
 		$this->set_error_data(array('form_info' => $info));
@@ -93,7 +93,7 @@ class Login extends My_controller
 		
 		// Se a funcionalidade foi executada e o user está logado
 		if($account_creation_executed && $this->session->userdata('username'))
-			$this->go_to('home');
+			$this->go_to(base_url());
 	}
 
 	public function logout(): Void
@@ -122,7 +122,7 @@ class Login extends My_controller
 		// Verifica o user na DB retorna null se não conseguir
 		$login_query = $this->login_model->login($user);
 		if(!$login_query){
-			$this->session->set_flashdata('login_status', FALSE);
+			$this->session->set_flashdata('login_status', 0);
 			$this->session->set_flashdata('login_info', 'Either your email address or password were incorrect');
 			return;
 		}
@@ -131,7 +131,7 @@ class Login extends My_controller
 		$this->session->set_userdata($login_query);
 		
 		// Set da mensagem de login
-		$this->session->set_flashdata('login_status', TRUE);
+		$this->session->set_flashdata('login_status', 1);
 		$this->session->set_flashdata('login_info', 'Logged in!');
 	}
 	 
@@ -156,6 +156,7 @@ class Login extends My_controller
 		$create_query = $this->login_model->create_account($user);
 		
 		if(!$create_query){
+			$this->session->set_flashdata('create_status', 0);
 			$this->session->set_flashdata('create_info', 'Server error');
 			return;
 		}
@@ -164,6 +165,7 @@ class Login extends My_controller
 		$this->session->set_userdata($user);
 		
 		// Set da mensagem de login
+		$this->session->set_flashdata('create_status', 1);
 		$this->session->set_flashdata('create_info', 'Account created!');
 	}
 
