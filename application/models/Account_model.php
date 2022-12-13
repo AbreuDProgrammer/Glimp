@@ -2,8 +2,7 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Account_model extends My_model 
-{
-
+{    
     // Funcionalidade construtora de cada model
     public function constructor()
     {
@@ -24,7 +23,7 @@ class Account_model extends My_model
             
         // Cria a query onde busca apenas pelo username
         $username_query = $this->get_user($user['username']);
-        
+
         // Verifica se o user existe
         if(!$username_query)
             return false;
@@ -81,7 +80,7 @@ class Account_model extends My_model
         $where = array(
             'username' => $username
         );
-        $username_query = $this->get('Users', $where);
+        $username_query = $this->get_where('Users', $where);
         return $username_query ?? null;
     }
 
@@ -90,7 +89,6 @@ class Account_model extends My_model
     {
         $user = array();
         $user['is_logged'] = $is_logged;
-        $this->db->where('username', $username);
-        $this->db->update('Users', $user);
+        $this->update('Users', $user, array('username' => $username));
     }
 }

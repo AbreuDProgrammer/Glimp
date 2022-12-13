@@ -6,7 +6,7 @@ class Home extends My_controller {
 	protected function construtor(): Void
 	{
 		// Carrega o modelo usado no Login
-		$this->load->model('Home_model', 'home_model');
+		//?$this->load->model('Home_model', 'home_model');
 	}
 
 	public function index()
