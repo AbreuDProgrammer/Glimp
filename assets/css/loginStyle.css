@@ -40,7 +40,12 @@
     margin: 1em;
 }
 
-.info 
+.success 
 {
-    color: orange;
+    color: green;
+}
+
+.error
+{
+    color: red;
 }

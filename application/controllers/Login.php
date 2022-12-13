@@ -46,7 +46,7 @@ class Login extends My_controller
 		$login_executed = $this->set_listener($this, 'login_action', 'POST', $this->form_validator->run());
 
 		// Verifica se o formulario já foi enviado e retorna uma mensagem ao user
-		$info = $this->test_form($login_executed, 'login_info');
+		$info = $this->test_form($login_executed, 'login_status', 'login_info');
 
 		// Apresenta essa mensagem
 		$this->set_error_data(array('form_info' => $info));
@@ -122,6 +122,7 @@ class Login extends My_controller
 		// Verifica o user na DB retorna null se não conseguir
 		$login_query = $this->login_model->login($user);
 		if(!$login_query){
+			$this->session->set_flashdata('login_status', FALSE);
 			$this->session->set_flashdata('login_info', 'Either your email address or password were incorrect');
 			return;
 		}
@@ -130,6 +131,7 @@ class Login extends My_controller
 		$this->session->set_userdata($login_query);
 		
 		// Set da mensagem de login
+		$this->session->set_flashdata('login_status', TRUE);
 		$this->session->set_flashdata('login_info', 'Logged in!');
 	}
 	 
