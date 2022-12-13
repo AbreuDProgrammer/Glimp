@@ -1,0 +1,6 @@
+/* ------------------- Profile ------------------- */
+
+#profile-page
+{
+    flex-grow: 95; /* Flex grow de 1/19 para ser o mesmo que o nav-bar 5% */
+}

@@ -1,12 +1,10 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Account extends My_controller 
+class Profile extends My_controller 
 {
 	// Regras de logins das contas
-	private const CHANGE_ACCOUNT_USERNAME_RULES = 'required|min_length[3]|max_length[12]|is_unique[Users.username]';
-	private const PASSWORD_RULES = 'required|min_length[8]';
-	private const PASSWORD_CONFIRMED_RULES = 'required|matches[password]';
+	private $user;
 
 	/**
 	 * É uma função obrigatória que carrega as funcionalidades usadas durante esse mesmo controller
@@ -14,8 +12,20 @@ class Account extends My_controller
 	 */
 	public function construtor(): Void
 	{
+		// Recebe o username do perfil
+		$username = $this->uri->segment(1);
+
 		// Carrega o modelo usado no Login
 		$this->load->model('Account_model', 'account_model');
+
+		$this->user = $this->account_model->get_user($username);
+
+		// Verifica se o user com esse username existe
+		if(!$this->user){
+			//! Melhorar informação de user não existir
+			$this->go_to('home');
+			return;
+		}
 	}
 
 	/**
@@ -28,37 +38,12 @@ class Account extends My_controller
 	{
 		// Envia as variaveis de link
 		$data = array(
-			'' => ''
+			'username' => $this->user['username'],
+			'email' => $this->user['email']
 		);
-		$this->set_link_data($data);
+		$this->set_body_data($data);
 		
 		// Cria a view sem o menu
-		$this->create_site_details('Account Settings', array('profileStyle'), 'account-settings/index-view');
-	}
-
-	// Funcionalidade para fazer o login quando enviado pelo POST
-	protected function login_action(): Void
-	{
-		if(!$_POST || !isset($_POST['username']) || !isset($_POST['password']))
-			return;
-
-		// Cria um array user para tentar fazer o login
-		$user = array(
-			'username' => $_POST['username'],
-			'password' => $_POST['password']
-		);
-
-		// Tenta fazer login, retorna null se não conseguir
-		$login_query = $this->Login_model->login($user);
-		
-		// Se o login não for feito
-		if(!$login_query)
-			return;
-		
-		// Altera o objeto login caso tenho conseguido
-		$this->login->signed_in($login_query);
-		
-		// Move o user para a pagina inicial
-		$this->go_to('home');
+		$this->create_site_details('Account Settings', array('profileStyle'), 'profile/index-view');
 	}
 }

@@ -31,7 +31,7 @@
 
 .submitDiv
 {
-    justify-content: center;
+    align-items: center;
 }
 
 #form_infos

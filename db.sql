@@ -11,6 +11,7 @@ CREATE TABLE Users (
   session_id int, /* Sessão salva quando iniciado em algum browser */
   apps_permissions text, /* Permissões que o user liberou para com outros apps array json_encode */
   configs text, /* Configurações dos users sobre qualquer definição salva array json_encode */
+  is_logged boolean, /* Boolean para saber se o user está logado */
   PRIMARY KEY(username)
 );
 
@@ -34,13 +35,6 @@ CREATE TABLE GroupBlocks (
   username_sender int(11), /* Id do user que fez o block */
   group_id_blocked int(11), /* Id do grupo que foi bloqueado */
   block_status varchar(80) /* O status do block (blocked, accessible) */
-);
-
-/* Tabela que controla todo login e logout dos users */
-CREATE TABLE Logs (
-  username_log int(11), /* Id do user que fez o login */
-  when_logged_in datetime, /* O dia e a hora em que o user fez o login */
-  when_logged_out datetime /* O dia e a hora em que o user fez o logout */
 );
 
 /**

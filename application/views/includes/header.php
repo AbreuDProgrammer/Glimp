@@ -28,3 +28,4 @@
     <title><? if(isset($title)) echo $title; ?></title>
 </head>
 <body>
+    <div id="page">

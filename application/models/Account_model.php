@@ -24,10 +24,8 @@ class Account_model extends My_model
         if(!$this->PasswordHash->CheckPassword($user['password'], $username_query['password']))
             return false;
 
-        // Informa que o login foi feito
-        $username_query['is_logged'] = TRUE;
-        $this->db->where('username', $username_query['username']);
-        $this->db->update('Users', $username_query);
+        // Informa que o login foi feito para a table users
+        $this->set_is_logged(TRUE, $user['username']);
             
         // Retorna os dados da DB
         return $username_query;
@@ -44,34 +42,46 @@ class Account_model extends My_model
             return false;
         
         $user['password'] = $this->PasswordHash->HashPassword($user['password']);
-        $user['is_logged'] = TRUE;
 
         $create_query = $this->insert('Users', $user);
 
         if(!$create_query)
             return false;
 
+        // Informa que o login foi feito para a table users
+        $this->set_is_logged(TRUE, $user['username']);
+
         return $create_query; // Retorna true se funcionar e false se não
     }
 
     /**
-     * Funcionalidade para a tabela 'Logs' e para o is_logged
+     * Funcionalidade que prepara o logout
      */
-    public function logout($user)
+    public function logout(Array|String $userdata): Void
     {
-        // Informa que o login foi feito para a table users
-        $user['is_logged'] = FALSE;
-        $this->db->where('username', $user['username']);
-        $this->db->update('Users', $user);
+        // Informa que o logout foi feito para a table users
+        $username = is_array($userdata) ? $userdata['username'] : $userdata;
+        $this->set_is_logged(FALSE, $username);
     }
 
     // Retorna os dados do user pelo username
-    public function get_user($username)
+    public function get_user(Array|String $userdata): Array|Null
     {
+        $username = is_array($userdata) ? $userdata['username'] : $userdata;
+
         $where = array(
             'username' => $username
         );
         $username_query = $this->get('Users', $where);
         return $username_query ?? null;
+    }
+
+    // Transforma o is_logged em TRUE ou FALSE
+    public function set_is_logged(Bool $is_logged, String $username): Void
+    {
+        $user = array();
+        $user['is_logged'] = $is_logged;
+        $this->db->where('username', $username);
+        $this->db->update('Users', $user);
     }
 }

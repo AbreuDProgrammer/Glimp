@@ -134,6 +134,7 @@ abstract class My_controller extends CI_Controller
 	{
 		$this->load_nav = TRUE;
 		$this->set_css_files(self::NAV_CSS_PATH);
+		$this->set_nav_data(array('profile' => $this->session->userdata('username')));
 	}
 
 	/**
@@ -232,6 +233,12 @@ abstract class My_controller extends CI_Controller
 	{
 		header('Location: '.$action);
 	}
+
+	// Troca de controlador para a pagina inicial sem o "/home/"
+	protected function go_to_home(): Void
+	{
+		header('Location: '.base_url());
+	}	
 
 	/**
 	 * Cria uma funcionalidade para POST e GET.

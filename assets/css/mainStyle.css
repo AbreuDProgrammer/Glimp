@@ -3,7 +3,7 @@
 html, body, div 
 {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     flex-wrap: nowrap;
     justify-content: flex-start;
     align-items: flex-start;
@@ -18,7 +18,7 @@ html, body, div
 
 html, body
 {
-    height: auto;
+    height: 100%;
     width: 100%;
 }
 
@@ -31,4 +31,10 @@ input
 a
 {
     color: aqua;
+}
+
+#page
+{
+    width: 100%;
+    height: 100%;
 }
