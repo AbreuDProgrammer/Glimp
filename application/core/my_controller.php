@@ -22,6 +22,7 @@ abstract class My_controller extends CI_Controller
 	private const ASSETS_PATH = 'assets';
 	private const CSS_PATH = 'css';
 	private const JS_PATH = 'js';
+	private const IMAGES_PATH = 'images';
 	private const MAIN_CSS_PATH = 'mainStyle';
 	private const NAV_CSS_PATH = 'navStyle';
 
@@ -116,7 +117,7 @@ abstract class My_controller extends CI_Controller
 	}
 
 	// Adiciona um ficheiro de js ao header
-	protected function set_js_files(String|Array $array): Void
+	protected function set_js_files(String|Array $file): Void
 	{
 		if(is_array($file))
 			foreach($array as $path)
@@ -131,7 +132,10 @@ abstract class My_controller extends CI_Controller
 	{
 		$this->load_nav = TRUE;
 		$this->set_css_files(self::NAV_CSS_PATH);
-		$this->set_nav_data(array('profile' => $this->session->userdata('username')));
+		$this->set_nav_data(array(
+			'profile' => $this->session->userdata('username')
+		));
+		$this->set_js_files('navbar');
 	}
 
 	/**
@@ -313,5 +317,11 @@ abstract class My_controller extends CI_Controller
 			$info = null;
 			return $info;
 		}
+	}
+
+	// Funcionalidade para retornar o caminho das imagens
+	public function base_images(String $file, String $type = 'png'): String
+	{
+		return base_url(self::ASSETS_PATH.'/'.self::IMAGES_PATH.'/'.$file.'.'.$type);
 	}
 }

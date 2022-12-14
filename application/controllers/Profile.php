@@ -22,8 +22,7 @@ class Profile extends My_controller
 
 		// Verifica se o user com esse username existe
 		if(!$this->user){
-			//! Melhorar informação de user não existir
-			$this->go_to('home');
+			$this->go_to('index.html');
 			return;
 		}
 	}
@@ -44,6 +43,18 @@ class Profile extends My_controller
 		$this->set_body_data($data);
 		
 		// Cria a view sem o menu
-		$this->create_site_details('Account Settings', array('profileStyle'), 'profile/index-view');
+		$this->create_site_details('Profile', array('profileStyle'), 'profile/index-view');
+	}
+	public function account(): Void
+	{
+		// Envia as variaveis de link
+		$data = array(
+			'username' => $this->user['username'],
+			'email' => $this->user['email']
+		);
+		$this->set_body_data($data);
+		
+		// Cria a view sem o menu
+		$this->create_site_details('Account Settings', array('profileStyle'), 'profile/account-view');
 	}
 }

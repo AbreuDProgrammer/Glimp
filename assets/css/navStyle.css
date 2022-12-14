@@ -1,20 +1,35 @@
 /* ------------------- Menu ------------------- */
 
-#nav 
+#sidebar 
 {
-    position: absolute;
-    height: 5%;
-    width: 100%;
-    background-color: brown;
-    top: 0;    
-
-    flex-direction: row;
-    justify-content: space-around;
-    align-items: center;
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: #2f3136;
+    overflow-x: hidden;
+    transition: 0.5s;
+    padding-top: 60px;
 }
 
-#nav-holder
+.item-sidebar
 {
+    flex-grow: 1;
+    align-items: center;
+    background-color: #2f3136;
     width: 100%;
-    flex-grow: 5;
+    height: auto;
+}
+
+#logo-sidebar
+{
+    width: 6em;
+    border-radius: 1em;
+}
+
+.href-sidebar
+{
+    width: 3em;
 }
