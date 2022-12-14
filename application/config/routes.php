@@ -61,5 +61,5 @@ $route['home'] = 'Home/index';
 $route['logout'] = 'Login/logout';
 
 // Forma de os users serem escritos
-$route['([a-zA-Z]+)'] = 'Profile/index/$1';
-$route['([a-zA-Z]+)/account'] = 'Profile/account/$1';
+$route[':any'] = 'Profile/index/$1';
+$route[':any/account'] = 'Profile/account/$1';
