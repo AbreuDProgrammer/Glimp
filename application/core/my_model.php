@@ -23,16 +23,16 @@ abstract class My_model extends CI_Model
      * Funcionalidades de get's, insert's e updates
      * Os gets pegam toda a informação do user
      * A ordem de passagem de informação dos parametros começa sempre pelo nome da tabela
+     * E o ultimo parametro é a clausula where que não é orbigatória ser passada em todos os casos
      */
-    protected function get(String $table): Array|Null
+    protected function get(String $table, Array $where = array()): Array|Null
     {
+        if($where)
+            $this->db->where($where);
         $query = $this->db->get($table);
+        if($where)
+            return $query->row_array();
         return $query->result_array();
-    }
-    protected function get_where(String $table, Array $where): Array|Null
-    {
-        $query = $this->db->get_where($table, $where);
-        return $query->row_array();
     }
     protected function insert(String $table, Array $data_array): Bool
     {
@@ -42,16 +42,12 @@ abstract class My_model extends CI_Model
         $insert_query = $this->db->insert($table, $data_array);
         return $insert_query; // True se funcionou e false se falhou
     }
-    protected function select(String $table, Array|String $specifc_data): Array
-    {
+    protected function select(String $table, Array|String $specifc_data, Array $where_array = array()): Array|Null
+    {        
         $this->db->select($specifc_data);
+        if($where_array)
+            $this->db->where($where_array);
         $query = $this->db->get($table);
-        return $query->result_array();
-    }
-    protected function select_where(String $table, Array|String $specifc_data, Array $where_array): Array
-    {
-        $this->db->select($specifc_data);
-        $query = $this->db->get_where($table, $where_array);
         return $query->result_array();
     }
     protected function update(String $table, Array $data, Array $where): Bool
