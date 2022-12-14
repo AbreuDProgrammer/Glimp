@@ -55,11 +55,11 @@ abstract class My_controller extends CI_Controller
 			$this->go_to('login');
 
 		// Executa as funcionalidades essenciais do controller
-		$this->construtor();
+		$this->constructor();
 	}
 
 	// Funcionalidade para carregar os models e outras funcionalidades
-	abstract protected function construtor(): Void;
+	abstract protected function constructor(): Void;
 
 	/**
 	 * Funcionalidade que todos os sites buscam para criar a parte grafica
@@ -317,11 +317,5 @@ abstract class My_controller extends CI_Controller
 			$info = null;
 			return $info;
 		}
-	}
-
-	// Funcionalidade para retornar o caminho das imagens
-	public function base_images(String $file, String $type = 'png'): String
-	{
-		return base_url(self::ASSETS_PATH.'/'.self::IMAGES_PATH.'/'.$file.'.'.$type);
 	}
 }
