@@ -20,10 +20,10 @@ abstract class My_model extends CI_Model
     abstract function constructor();
 
     /**
-     * Funcionalidades de get's, insert's e updates
-     * Os gets pegam toda a informação do user
-     * A ordem de passagem de informação dos parametros começa sempre pelo nome da tabela
-     * E o ultimo parametro é a clausula where que não é orbigatória ser passada em todos os casos
+     * Funcionalidade para recolher toda a informação de uma ou mais rows
+     * É sempre passado o nome da tabela como String
+     * E é opciuonalmente passado a clausula where com um array associativo
+     * $this->get('Users'); || $this->get('Users', array('username' => 'Leonardo'));
      */
     protected function get(String $table, Array $where = array()): Array|Null
     {
@@ -34,6 +34,12 @@ abstract class My_model extends CI_Model
             return $query->row_array();
         return $query->result_array();
     }
+
+    /**
+     * Funcionalidade para inserir uma row à uma tabela
+     * É passado o nome da tabela e as informações em array associativo
+     * $this->insert('Users', array('username' => 'Leonardo', 'password' => 'myPassword'));
+     */
     protected function insert(String $table, Array $data_array): Bool
     {
         if(empty($data_array))
@@ -42,6 +48,14 @@ abstract class My_model extends CI_Model
         $insert_query = $this->db->insert($table, $data_array);
         return $insert_query; // True se funcionou e false se falhou
     }
+
+    /**
+     * Funcionalidade para recolher um número específico de informações de uma tabela
+     * É passado o nome da tabela em String
+     * É passado as informações para ser recolhidas como array associativo
+     * E é opcionalmente passado uma clausula where como array associativo
+     * $this->select('Users', 'username'); || $this->select('Users', array('username', 'email')); || $this->select('Users', 'email', array('username' => 'leonardo'));
+     */
     protected function select(String $table, Array|String $specifc_data, Array $where_array = array()): Array|Null
     {        
         $this->db->select($specifc_data);
@@ -50,9 +64,29 @@ abstract class My_model extends CI_Model
         $query = $this->db->get($table);
         return $query->result_array();
     }
+
+    /**
+     * Funcionalidade para atualizar alguma row de uma tabela
+     * É passado o nome da tabela, as informações a serem adicionadas em array associativo e uma clausula where array associativo
+     * $this->update('Users', array('email' => 'leo@gmail.com'), array('username' => 'Leonardo'));
+     */
     protected function update(String $table, Array $data, Array $where): Bool
     {
         $update = $this->db->update($table, $data, $where);
         return $update;
+    }
+
+    /**
+     * Funcionalidade para deletar informações na tabela
+     * É passado o nome da tabela em String
+     * É passado a clausula where em array associativo
+     * $this->delete('Users', array('username' => 'Leonardo'));
+     */
+    protected function delete(String $table, Array $where): Bool
+    {
+        if(empty($where))
+            return false;
+        $this->db->where($where);
+        $this->db->delete($table);
     }
 }
