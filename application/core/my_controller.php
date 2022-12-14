@@ -37,7 +37,7 @@ abstract class My_controller extends CI_Controller
 	// Contrutor que carrega as funcionalidades de urls e adiciona um css padrão a todas as paginas
 	public function __construct()
 	{
-		// Chama o construtor do CI_Controller
+		// Chama o constructor do CI_Controller
 		parent::__construct();
 
 		// Carrega as bibliotecas e os helpers 

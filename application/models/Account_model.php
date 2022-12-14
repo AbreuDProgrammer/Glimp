@@ -3,7 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Account_model extends My_model 
 {    
-    // Funcionalidade construtora de cada model
+    // Funcionalidade constructora de cada model
     public function constructor()
     {
         // Carrega o PasswordHash

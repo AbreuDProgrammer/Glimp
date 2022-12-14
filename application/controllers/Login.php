@@ -13,7 +13,7 @@ class Login extends My_controller
 	 * É uma função obrigatória que carrega as funcionalidades usadas durante esse mesmo controller
 	 * Como a instancia dos models
 	 */
-	public function construtor(): Void
+	public function constructor(): Void
 	{
 		// Verifica se o user está loggado ou se está na pagina de logout
 		if($this->session->userdata('username') && $this->uri->segment(1) <> 'logout'){

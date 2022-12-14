@@ -19,7 +19,7 @@ final class User
     private const ARRAY_DATA = array('apps_permissions', 'configs');
 
     /**
-     * Funcionalidade construtor é responsavel
+     * Funcionalidade constructor é responsavel
      * por verificar as informações e
      * por definir as informações do user
      */

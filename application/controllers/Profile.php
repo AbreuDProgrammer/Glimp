@@ -10,7 +10,7 @@ class Profile extends My_controller
 	 * É uma função obrigatória que carrega as funcionalidades usadas durante esse mesmo controller
 	 * Como a instancia dos models
 	 */
-	public function construtor(): Void
+	public function constructor(): Void
 	{
 		// Recebe o username do perfil
 		$username = $this->uri->segment(1);
