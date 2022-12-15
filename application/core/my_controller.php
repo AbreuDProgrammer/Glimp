@@ -40,10 +40,6 @@ abstract class My_controller extends CI_Controller
 		// Chama o constructor do CI_Controller
 		parent::__construct();
 
-		// Carrega as bibliotecas e os helpers 
-		$this->load_libraries();
-		$this->load_helpers();
-
 		// Cria os arrays multidimensionais
 		$this->create_data_arrays();
 		
@@ -206,29 +202,6 @@ abstract class My_controller extends CI_Controller
 		$this->data_header['link'] = array();
 	}
 
-	// Carrega todas as bibliotecas dos controllers
-	private function load_libraries(): Void
-	{
-		// Carrega o iterator com o apelido de 'iterator'
-		$this->load->library('my_iterator', null, 'iterator');
-
-		// Carrega a biblioteca de validação de formularios com o apelido de 'form_validator'
-		$this->load->library('form_validation', null, 'form_validator');
-
-		// Carrega a biblioteca de sessão
-		$this->load->library('session');
-	}
-
-	// Carrega todas os helpers dos controllers
-	private function load_helpers(): Void
-	{
-		// Instancia as funcionalidades de ancoras
-		$this->load->helper('url');
-
-		// Carrega o helper do formulario
-		$this->load->helper('form');
-	}
-
 	// Troca de controlador
 	protected function go_to(String $action): Void
 	{
@@ -239,7 +212,7 @@ abstract class My_controller extends CI_Controller
 	protected function go_to_home(): Void
 	{
 		header('Location: '.base_url());
-	}	
+	}
 
 	/**
 	 * Cria uma funcionalidade para POST e GET.
