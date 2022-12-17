@@ -84,7 +84,7 @@ class Account_model extends My_model
     }
 
     // Retorna os dados do user pelo username
-    public function get_user(Array|String $userdata): Array|Null
+    public function get_user(Array|String $userdata): Array|NULL
     {
         $username = is_array($userdata) ? $userdata['username'] : $userdata;
 
@@ -92,7 +92,7 @@ class Account_model extends My_model
             'username' => $username
         );
         $username_query = $this->get('Users', $where);
-        return $username_query ?? null;
+        return $username_query ?? NULL;
     }
 
     /**
@@ -108,14 +108,14 @@ class Account_model extends My_model
         );
         $username_query = $this->select('Users', 'username', $where);
 
-        return $username_query <> null;
+        return $username_query <> NULL;
     }
 
     /**
      * Funcionalidade para recber a palavra-passe do user pelo username
      * Usado no login para trazer apenas a password para testar com a passada
      */
-    public function user_password(Array|String $userdata): String|Null
+    public function user_password(Array|String $userdata): String|NULL
     {
         $username = is_array($userdata) ? $userdata['username'] : $userdata;
 
@@ -124,7 +124,7 @@ class Account_model extends My_model
         );
         $username_query = $this->select('Users', 'password', $where);
 
-        return $username_query[0]['password'] ?? null;
+        return $username_query[0]['password'] ?? NULL;
     }
 
     // Transforma o is_logged em TRUE ou FALSE

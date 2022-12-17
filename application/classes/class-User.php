@@ -27,17 +27,17 @@ final class User
     {
         $user = $this->clean_data($data);
 
-        $this->data['username'] = $user['username'] ?? null;
-        $this->data['password'] = $user['password'] ?? null;
-        $this->data['email'] = $user['email'] ?? null;
-        $this->data['phone'] = $user['phone'] ?? null;
-        $this->data['name'] = $user['name'] ?? null;
-        $this->data['email_extra'] = $user['email_extra'] ?? null;
-        $this->data['birthday'] = $user['birthday'] ?? null;
-        $this->data['description'] = $user['description'] ?? null;
-        $this->data['session_id'] = $user['session_id'] ?? null;
-        $this->data['apps_permissions'] = $user['apps_permissions'] ?? null;
-        $this->data['configs'] = $user['configs'] ?? null;
+        $this->data['username'] = $user['username'] ?? NULL;
+        $this->data['password'] = $user['password'] ?? NULL;
+        $this->data['email'] = $user['email'] ?? NULL;
+        $this->data['phone'] = $user['phone'] ?? NULL;
+        $this->data['name'] = $user['name'] ?? NULL;
+        $this->data['email_extra'] = $user['email_extra'] ?? NULL;
+        $this->data['birthday'] = $user['birthday'] ?? NULL;
+        $this->data['description'] = $user['description'] ?? NULL;
+        $this->data['session_id'] = $user['session_id'] ?? NULL;
+        $this->data['apps_permissions'] = $user['apps_permissions'] ?? NULL;
+        $this->data['configs'] = $user['configs'] ?? NULL;
     }
 
     // Organiza toda a informação do user antes de ser definida

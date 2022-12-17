@@ -62,16 +62,17 @@ abstract class My_controller extends CI_Controller
 	 * Css e Variaveis passadas como array associativos porque podem existir mais do que 
 	 * um ficheiro de css e mais do que uma variavel
 	 */
-	protected function create_site_details(String $title, Array $css, String $view, Bool $nav = TRUE): Void
+	protected function create_site_details(String $title, String $view, Array|String $css = NULL, Bool $nav = TRUE): Void
 	{
 		// Define um titulo para a pagina
 		$this->set_title($title);
 
 		// Carrega o array de css's
-		$this->set_css_files($css);
+		if($css <> NULL)
+			$this->set_css_files($css);
 
 		// Verifica se a nav está ligada nesta pagina
-		if($nav)
+		if($nav === TRUE)
 			$this->set_nav();
 
 		// Carrega as views
@@ -270,7 +271,7 @@ abstract class My_controller extends CI_Controller
 	 * Essa verificação só existe para que a DB não seja ativada sem propósito, já que
 	 * se os dados não passarem nem as regras com certeza não existem
 	 */
-	protected function test_form(Bool $listener_response, String $flashdata_status, String $flashdata_name): String|Null
+	protected function test_form(Bool $listener_response, String $flashdata_status, String $flashdata_name): String|NULL
 	{
 		// Se o status está definido retorna a mensagem da tentativa
 		if($this->session->flashdata($flashdata_status) !== NULL){
@@ -285,9 +286,9 @@ abstract class My_controller extends CI_Controller
 			return $info;
 		}
 
-		// Se o listener_response ainda não executou a function então é null
+		// Se o listener_response ainda não executou a function então é NULL
 		if(!$listener_response){
-			$info = null;
+			$info = NULL;
 			return $info;
 		}
 	}

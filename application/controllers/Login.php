@@ -119,7 +119,7 @@ class Login extends My_controller
 			'password' => $this->input->post('password')
 		);
 
-		// Verifica o user na DB retorna null se não conseguir
+		// Verifica o user na DB retorna NULL se não conseguir
 		$login_query = $this->login_model->login($user);
 		if(!$login_query){
 			$this->session->set_flashdata('login_status', 0);

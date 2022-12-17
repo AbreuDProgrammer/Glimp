@@ -199,7 +199,7 @@ class CI_Exceptions {
 		$message = $exception->getMessage();
 		if (empty($message))
 		{
-			$message = '(null)';
+			$message = '(NULL)';
 		}
 
 		if (is_cli())

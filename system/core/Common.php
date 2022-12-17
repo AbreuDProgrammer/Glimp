@@ -619,7 +619,7 @@ if ( ! function_exists('_error_handler'))
 		$_error->log_exception($severity, $message, $filepath, $line);
 
 		// Should we display the error?
-		if (str_ireplace(array('off', 'none', 'no', 'false', 'null'), '', ini_get('display_errors')))
+		if (str_ireplace(array('off', 'none', 'no', 'false', 'NULL'), '', ini_get('display_errors')))
 		{
 			$_error->show_php_error($severity, $message, $filepath, $line);
 		}
@@ -655,7 +655,7 @@ if ( ! function_exists('_exception_handler'))
 
 		is_cli() OR set_status_header(500);
 		// Should we display the error?
-		if (str_ireplace(array('off', 'none', 'no', 'false', 'null'), '', ini_get('display_errors')))
+		if (str_ireplace(array('off', 'none', 'no', 'false', 'NULL'), '', ini_get('display_errors')))
 		{
 			$_error->show_exception($exception);
 		}
@@ -699,7 +699,7 @@ if ( ! function_exists('remove_invisible_characters'))
 	/**
 	 * Remove Invisible Characters
 	 *
-	 * This prevents sandwiching null characters
+	 * This prevents sandwiching NULL characters
 	 * between ascii characters, like Java\0script.
 	 *
 	 * @param	string

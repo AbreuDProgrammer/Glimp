@@ -25,7 +25,7 @@ abstract class My_model extends CI_Model
      * E é opciuonalmente passado a clausula where com um array associativo
      * $this->get('Users'); || $this->get('Users', array('username' => 'Leonardo'));
      */
-    protected function get(String $table, Array $where = array()): Array|Null
+    protected function get(String $table, Array $where = array()): Array|NULL
     {
         if($where)
             $this->db->where($where);
@@ -56,7 +56,7 @@ abstract class My_model extends CI_Model
      * E é opcionalmente passado uma clausula where como array associativo
      * $this->select('Users', 'username'); || $this->select('Users', array('username', 'email')); || $this->select('Users', 'email', array('username' => 'leonardo'));
      */
-    protected function select(String $table, Array|String $specifc_data, Array $where_array = array()): Array|Null
+    protected function select(String $table, Array|String $specifc_data, Array $where_array = array()): Array|NULL
     {        
         $this->db->select($specifc_data);
         if($where_array)
