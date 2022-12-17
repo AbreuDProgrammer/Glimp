@@ -26,6 +26,8 @@ input
 {
     padding: 1em;
     border-radius: 0.5em;
+    border: 0em;
+    margin: 1em;
 }
 
 a
@@ -37,4 +39,12 @@ a
 {
     width: 100%;
     height: 100%;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.form_item
+{
+    flex-direction: row;
+    align-items: center;
 }
