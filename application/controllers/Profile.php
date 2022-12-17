@@ -43,8 +43,9 @@ class Profile extends My_controller
 		$this->set_body_data($data);
 		
 		// Cria a view sem o menu
-		$this->create_site_details('Profile', array('profileStyle'), 'profile/index-view');
+		$this->create_site_details('Profile', 'profile/index-view', 'profileStyle');
 	}
+	
 	public function account(): Void
 	{
 		// Envia as variaveis de link
@@ -55,6 +56,6 @@ class Profile extends My_controller
 		$this->set_body_data($data);
 		
 		// Cria a view sem o menu
-		$this->create_site_details('Account Settings', array('profileStyle'), 'profile/account-view');
+		$this->create_site_details('Account Settings', 'profile/account-view', 'profileStyle');
 	}
 }

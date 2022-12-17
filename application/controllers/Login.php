@@ -58,7 +58,7 @@ class Login extends My_controller
 		$this->set_link_data($data);
 		
 		// Cria a view sem o menu
-		$this->create_site_details('Login', array('loginStyle'), 'login/login-view', FALSE);
+		$this->create_site_details('Login', 'login/login-view', 'loginStyle', FALSE);
 
 		// Se a funcionalidade foi executada e o user está logado
 		if($login_executed && $this->session->userdata('username'))
@@ -89,7 +89,7 @@ class Login extends My_controller
 		$this->set_link_data($data);
 
 		// Cria a view sem o menu
-		$this->create_site_details('Create Account', array('loginStyle'), 'login/create-account-view', FALSE);
+		$this->create_site_details('Create Account', 'login/create-account-view', 'loginStyle', FALSE);
 		
 		// Se a funcionalidade foi executada e o user está logado
 		if($account_creation_executed && $this->session->userdata('username'))
