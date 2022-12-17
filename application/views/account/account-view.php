@@ -1,7 +1,7 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
 <div id="account-page">
     <form method="post">
-        <input type="hidden" value="<?= $id; ?>" name="user_id">
+        <input type="hidden" value="<?= $user_id; ?>" name="user_id">
         <input value="<?= $username; ?>" type="text" name="username" placeholder="Username">
         <input value="<?= $email; ?>" type="email" name="email" placeholder="Email">
         <input value="" type="tel" name="phone" placeholder="Phone">

@@ -9,6 +9,9 @@ class Account extends My_controller
 {	
 	private $account;
 
+	// Constantes para os formularios
+	private const USERNAME_RULES = 'required|min_length[3]|max_length[12]';
+
 	/**
 	 * É uma função obrigatória que carrega as funcionalidades usadas durante esse mesmo controller
 	 * Nesse caso irá carregar o user na url
@@ -37,6 +40,9 @@ class Account extends My_controller
 	 */
 	public function index(): Void
 	{
+		// Regras do formulários
+		$this->form_validator->set_rules('username', 'Username', self::USERNAME_RULES);
+
 		// Testa se o login foi enviado e verifica o formulario
 		$login_executed = $this->set_listener($this, 'update_user', 'POST', $this->form_validator->run());
 

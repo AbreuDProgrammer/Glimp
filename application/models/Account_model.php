@@ -277,7 +277,9 @@ class Account_model extends My_model
         }
         else
         {
-            return $this->get('Users', $where);
+            $user = $this->get('Users', $where);
+            unset($user['password']);
+            return $user;
         }
     }
 
