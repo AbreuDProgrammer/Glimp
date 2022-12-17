@@ -47,7 +47,7 @@ class Account extends My_controller
 		$login_executed = $this->set_listener($this, 'update_user', 'POST', $this->form_validator->run());
 
 		// Verifica se o formulario já foi enviado e retorna uma mensagem ao user
-		$info = $this->test_form($login_executed, 'login_status', 'login_info');
+		$info = $this->test_form($login_executed, 'update_status', 'update_info');
 
 		// Apresenta essa mensagem
 		$this->set_error_data(array('form_info' => $info));
@@ -68,6 +68,7 @@ class Account extends My_controller
 
 		// Cria um array user para tentar fazer o login
 		$user = array(
+			'user_id' => $this->input->post('user_id'),
 			'username' => $this->input->post('username'),
 			'email' => $this->input->post('email'),
 			'phone' => $this->input->post('phone'),
@@ -76,18 +77,15 @@ class Account extends My_controller
 		);
 
 		// Verifica o user na DB retorna NULL se não conseguir
-		$update_query = $this->account_model->update_user($user);
-		if(!$login_query){
-			$this->session->set_flashdata('login_status', 0);
-			$this->session->set_flashdata('login_info', 'Either your email address or password were incorrect');
+		$update_query = $this->account_model->update_user($user, $this->session->userdata());
+		if(!$update_query){
+			$this->session->set_flashdata('update_status', 0);
+			$this->session->set_flashdata('update_info', 'Server error');
 			return;
 		}
-
-		// Faz o login
-		$this->session->set_userdata($login_query);
 		
 		// Set da mensagem de login
-		$this->session->set_flashdata('login_status', 1);
-		$this->session->set_flashdata('login_info', 'Logged in!');
+		$this->session->set_flashdata('update_status', 1);
+		$this->session->set_flashdata('update_info', 'User updated!');
 	}
 }

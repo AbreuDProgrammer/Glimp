@@ -1,4 +1,30 @@
-#profile-page
+#profile
 {
-    flex-grow: 95; /* Flex grow de 1/19 para ser o mesmo que o nav-bar 5% */
+    flex-direction: row;
+    margin: 1em;
+}
+
+#picture_div
+{
+    width: 50%;
+    height: 100%;
+    flex-grow: 1;
+    align-items: center;
+    margin-right: 2em;
+}
+
+#profile_img
+{
+    width: 8em;
+    border-radius: 5em;
+}
+
+#username
+{
+    height: 50%;
+}
+
+#name
+{
+    height: 50%;
 }

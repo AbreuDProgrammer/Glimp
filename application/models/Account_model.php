@@ -398,4 +398,16 @@ class Account_model extends My_model
         );
         $this->insert('UserDataPermissions', $default_data);
     }
+
+    /**
+     * Atualiza todos os dados do user
+     */
+    public function update_user(Array $userdata, Array $user_sender): Bool
+    {
+        if($userdata['user_id'] <> $user_sender['user_id'])
+            return FALSE;
+
+        $update = $this->update('Users', $userdata, array('user_id' => $user_sender['user_id']));
+        return $update;
+    }
 }

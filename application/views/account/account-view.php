@@ -12,15 +12,15 @@
     </div>
     <div class="form_item">
         <h2>Phone number</h2>
-        <input value="" type="tel" name="phone" placeholder="Phone">
+        <input value="<?= $phone; ?>" type="tel" name="phone" placeholder="Phone">
     </div>
     <div class="form_item">
         <h2>Name</h2>
-        <input value="" type="text" name="name" placeholder="Name">
+        <input value="<?= $name; ?>" type="text" name="name" placeholder="Name">
     </div>
     <div class="form_item">
         <h2>Birthday</h2>
-        <input value="" type="date" name="birthday" placeholder="Birthday">
+        <input value="<?= $birthday; ?>" type="date" name="birthday" placeholder="Birthday">
     </div>
     <input type="submit" value="Submit">
 </form>

@@ -5,8 +5,8 @@ html, body, div
     display: flex;
     flex-direction: column;
     flex-wrap: nowrap;
-    justify-content: flex-start;
-    align-items: flex-start;
+    justify-content: center;
+    align-items: center;
 
     margin: 0;
     border: 0;

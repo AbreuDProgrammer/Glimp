@@ -46,29 +46,13 @@ class Profile extends My_controller
 	 */
 	public function index(): Void
 	{
-		// Envia as variaveis de link
-		$data = array(
-			'username' => $this->user['username'],
-			'email' => $this->user['email']?? NULL
-		);
-		$this->set_body_data($data);
+		/**
+		 * Pode ser passado o user aqui porque os dados pessoais
+		 * só serão mostrados se o user decidir que sim
+		 */
+		$this->set_body_data($this->user);
 		
 		// Cria a view sem o menu
 		$this->create_site_details('Profile', 'profile/index-view', 'profileStyle');
 	}
-	
-	/*
-	public function account(): Void
-	{
-		// Envia as variaveis de link
-		$data = array(
-			'username' => $this->user['username'],
-			'email' => $this->user['email']
-		);
-		$this->set_body_data($data);
-		
-		// Cria a view sem o menu
-		$this->create_site_details('Account Settings', 'profile/account-view', 'profileStyle');
-	}
-	*/
 }
