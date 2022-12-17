@@ -6,12 +6,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * Como as definições do user com relação as permissões
  */
 class Account extends My_controller
-{
-	/**
-	 * Guarda toda a informação acessível ao público do user na url
-	 * ATENÇÃO que esse controller mostra tudo que é público, então o modelo
-	 * vai carregar apenas as informação públicas
-	 */
+{	
 	private $account;
 
 	/**
@@ -26,9 +21,9 @@ class Account extends My_controller
 		// Carrega o modelo usado no Login
 		$this->load->model('Account_model', 'account_model');
  
-		// Guarda os dados públicos do user
-		$this->account = $this->account_model->get_user($username);
-
+		// Faz a requisição do user e verifica também no model se os dados estão corretos
+		$this->account = $this->account_model->get_user_by_username_private($username, $this->session->userdata());
+		
 		// Verifica se o user com esse username existe
 		if(!$this->account){
 			$this->go_to_home();
@@ -41,11 +36,7 @@ class Account extends My_controller
 	 * A senha é alterada em outra view
 	 */
 	public function index(): Void
-	{		
-		// Regras do formulários
-		$this->form_validator->set_rules('username', 'Username', self::USERNAME_RULES);
-		$this->form_validator->set_rules('email', 'Email', self::EMAIL_RULES);
-
+	{
 		// Testa se o login foi enviado e verifica o formulario
 		$login_executed = $this->set_listener($this, 'update_user', 'POST', $this->form_validator->run());
 

@@ -1,8 +1,7 @@
-/* Tabela dos users */
 CREATE TABLE Users (
-  user_id int(11) NOT_NULL AUTO_INCREMENT, /* Id único de cada user AI */
-  username varchar(255) NOT_NULL, /* Username único de cada user, alterável */
-  password varchar(255) NOT_NULL, /* Password sha256 com pelo menos 1 número e uma maiúscula */
+  user_id int(11) AUTO_INCREMENT, /* Id único de cada user AI */
+  username varchar(255) NOT NULL, /* Username único de cada user, alterável */
+  password varchar(255) NOT NULL, /* Password sha256 com pelo menos 1 número e uma maiúscula */
   email varchar(255), /* Email único de cada user com verificação, alterável */
   phone int(9), /* Número de telemóvel único, alterável */
   name varchar(255), /* Nome de cada user, sem números */
@@ -11,6 +10,7 @@ CREATE TABLE Users (
   description text, /* Descrição do user */
   last_time_online datetime, /* Última vez que o user esteve online */
   email_extra varchar(255), /* Email reserva único de cada user com verificação, alterável */
+  is_logged boolean, /* TRUE or FALSE para verificar se o user está logado */
   session_id int, /* Sessão salva quando iniciado em algum browser */
   apps_permissions_id int(11), /* Permissões que o user liberou para com outros apps o Id da tabela */
   configs text, /* Configurações dos users sobre qualquer definição salva array json_encode */
@@ -22,9 +22,10 @@ CREATE TABLE Users (
  * 
  */
 CREATE TABLE UserAppsPermissions (
-    permission_id int(11) NOT_NULL AUTO_INCREMENT, /* O Id das permissões */
+    permission_id int(11) AUTO_INCREMENT, /* O Id das permissões */
     /* Todas as apps permitidas pelo user */
-    spotify boolean /* Se estiver ouvindo musica mostra qual é */
+    spotify boolean,
+    PRIMARY KEY(permission_id)
 );
 
 /** 

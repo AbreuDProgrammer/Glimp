@@ -8,7 +8,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * Como a visão da conta e de seus sites a todos
  */
 class Profile extends My_controller 
-{	
+{
 	/**
 	 * Guarda toda a informação acessível ao público do user na url
 	 * ATENÇÃO que esse controller mostra tudo que é público, então o modelo
@@ -29,7 +29,7 @@ class Profile extends My_controller
 		$this->load->model('Account_model', 'account_model');
  
 		// Guarda os dados públicos do user
-		$this->user = $this->account_model->get_user($username);
+		$this->user = $this->account_model->get_user_by_username($username);
 
 		// Verifica se o user com esse username existe
 		if(!$this->user){
