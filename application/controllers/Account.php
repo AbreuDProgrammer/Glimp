@@ -22,7 +22,7 @@ class Account extends My_controller
 		$this->load->model('Account_model', 'account_model');
  
 		// Faz a requisição do user e verifica também no model se os dados estão corretos
-		$this->account = $this->account_model->get_user_by_username_private($username, $this->session->userdata());
+		$this->account = $this->account_model->get_user_by_username($username, $this->session->userdata());
 		
 		// Verifica se o user com esse username existe
 		if(!$this->account){

@@ -29,11 +29,11 @@ class Profile extends My_controller
 		$this->load->model('Account_model', 'account_model');
  
 		// Guarda os dados públicos do user
-		$this->user = $this->account_model->get_user_by_username($username);
+		$this->user = $this->account_model->get_user_by_username($username, $this->session->userdata());
 
 		// Verifica se o user com esse username existe
 		if(!$this->user){
-			$this->go_to('index.html');
+			$this->go_to_home();
 			return;
 		}
 	}
@@ -49,7 +49,7 @@ class Profile extends My_controller
 		// Envia as variaveis de link
 		$data = array(
 			'username' => $this->user['username'],
-			'email' => $this->user['email']
+			'email' => $this->user['email']?? NULL
 		);
 		$this->set_body_data($data);
 		

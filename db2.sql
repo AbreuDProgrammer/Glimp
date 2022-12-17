@@ -12,20 +12,37 @@ CREATE TABLE Users (
   email_extra varchar(255), /* Email reserva único de cada user com verificação, alterável */
   is_logged boolean, /* TRUE or FALSE para verificar se o user está logado */
   session_id int, /* Sessão salva quando iniciado em algum browser */
-  apps_permissions_id int(11), /* Permissões que o user liberou para com outros apps o Id da tabela */
   configs text, /* Configurações dos users sobre qualquer definição salva array json_encode */
   PRIMARY KEY(user_id)
 );
 
 /**
  * Tabela que guarda quais apps o user permitiu ser acedida
- * 
+ * Os dados serão organizados como (public, protected, private) varchar(9)
+ * Public é visivel para todos
+ * Protected é visiveis para amigos
+ * Private não é visivel a ninguém
  */
 CREATE TABLE UserAppsPermissions (
-    permission_id int(11) AUTO_INCREMENT, /* O Id das permissões */
-    /* Todas as apps permitidas pelo user */
-    spotify boolean,
-    PRIMARY KEY(permission_id)
+    user_id_apps_permissions int(11), /* O Id do user que se refere as permissões de apps */
+    spotify varchar(9)
+);
+
+/**
+ * Tabela que guarda quais os dados pessoais dele
+ * serão publicos, como email, birthday etc.
+ * Os dados pessoais serão organizados como (public, protected, private) varchar(9)
+ * Public é visivel para todos
+ * Protected é visiveis para amigos
+ * Private não é visivel a ninguém
+ */
+CREATE TABLE UserDataPermissions (
+    user_id_data_permissions int(11), /* O Id do que se refere as permissões de visualização */
+    email varchar(9),
+    phone varchar(9),
+    name varchar(9),
+    birthday varchar(9),
+    description varchar(9)
 );
 
 /** 

@@ -119,16 +119,14 @@ class Login extends My_controller
 			'password' => $this->input->post('password')
 		);
 
-		// Verifica o user na DB retorna NULL se não conseguir
-		$login_query = $this->login_model->login($user);
-		if(!$login_query){
+		// Tenta fazer o login do user
+		$login_try = $this->login_user($user);
+
+		if(!$login_try){
 			$this->session->set_flashdata('login_status', 0);
 			$this->session->set_flashdata('login_info', 'Either your email address or password were incorrect');
 			return;
 		}
-
-		// Faz o login
-		$this->session->set_userdata($login_query);
 		
 		// Set da mensagem de login
 		$this->session->set_flashdata('login_status', 1);
@@ -161,12 +159,31 @@ class Login extends My_controller
 			return;
 		}
 
-		// Faz o login com as informação que o user acabou de criar
-		$this->session->set_userdata($user);
+		// Faz o login do user
+		$this->login_user($user);
 		
 		// Set da mensagem de login
 		$this->session->set_flashdata('create_status', 1);
 		$this->session->set_flashdata('create_info', 'Account created!');
+	}
+
+	/**
+	 * Funcionalidade usada no login e na criação de conta que recebe o username e a password nos parametros 
+	 * e faz o login do user se conseguir, retornando TRUE or FALSE se não conseguir
+	 */
+	private function login_user(Array $userdata): Bool
+	{
+		// Verifica o user na DB retorna NULL se não conseguir
+		$login_query = $this->login_model->login($userdata);
+
+		if(!$login_query){
+			return FALSE;
+		}
+
+		// Faz o login
+		$this->session->set_userdata($login_query);
+
+		return TRUE;
 	}
 
 	// Funcionalidade para executar o logout do user
