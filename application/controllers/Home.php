@@ -12,6 +12,6 @@ class Home extends My_controller
 	public function index()
 	{
 		// Cria a view 
-		$this->create_site_details('Rain', 'home/home-view', 'homeStyle');
+		$this->create_site_details('Glimp', 'home/home-view', 'homeStyle');
 	}
 }
