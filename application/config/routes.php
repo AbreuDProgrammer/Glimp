@@ -57,9 +57,8 @@ $route['login'] = 'Login/index';
 $route['profile'] = 'Profile/index';
 $route['create_account'] = 'Login/create_account';
 $route['home'] = 'Home/index';
-
 $route['logout'] = 'Login/logout';
 
-// Forma de os users serem escritos
 $route[':any'] = 'Profile/index/$1';
-$route[':any/account'] = 'Profile/account/$1';
+
+$route[':any/account'] = 'Account/index/$1';

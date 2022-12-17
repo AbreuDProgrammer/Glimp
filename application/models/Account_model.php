@@ -9,8 +9,6 @@ class Account_model extends My_model
         // Carrega o PasswordHash
         $this->load->helper('PasswordHash_helper');
         $this->PasswordHash = new PasswordHash(8);
-
-        $this->user_exists('vini');
     }
 
     /**
@@ -24,7 +22,7 @@ class Account_model extends My_model
             return false;
             
         // Cria a query onde busca apenas pelo username
-        $username_query = $this->user_exists($user['username']);
+        $username_query = $this->username_exists($user['username']);
 
         // Verifica se o user existe
         if(!$username_query)
@@ -41,7 +39,7 @@ class Account_model extends My_model
         $this->set_is_logged(TRUE, $user['username']);
             
         // Retorna os dados da DB
-        return $this->get_user($user);
+        return $this->get_user_by_username($user);
     }
 
     /**
@@ -55,7 +53,7 @@ class Account_model extends My_model
         if(!isset($user['username']) || !isset($user['password']))
             return false;
 
-        $username_exists = $this->user_exists($user['username']);
+        $username_exists = $this->username_exists($user['username']);
 
         if($username_exists)
             return false;
@@ -83,8 +81,37 @@ class Account_model extends My_model
         $this->set_is_logged(FALSE, $username);
     }
 
+    /**
+     * Funcionalidade que atualiza os dados do user
+     * Primeiro é passado qual o id do user, depois os dados em 
+     * array associativo
+     */
+    public function update_user(Int $user_id, Array $userdata): Bool
+    {
+        // Verifica se o user existe
+        if(!$this->user_id_exists($user_id))
+            return false;
+
+        $user = $this->get_user_by_id($user_id);
+
+        $update = $this->update('Users', $userdata, array('user_id' => $user_id));
+        return $update;
+    }
+
+    // Retorna os dados do user pelo id
+    public function get_user_by_id(Array|String $userdata): Array|NULL
+    {
+        $username = is_array($userdata) ? $userdata['username'] : $userdata;
+
+        $where = array(
+            'username' => $username
+        );
+        $username_query = $this->get('Users', $where);
+        return $username_query ?? NULL;
+    }
+
     // Retorna os dados do user pelo username
-    public function get_user(Array|String $userdata): Array|NULL
+    public function get_user_by_username(Array|String $userdata): Array|NULL
     {
         $username = is_array($userdata) ? $userdata['username'] : $userdata;
 
@@ -96,10 +123,24 @@ class Account_model extends My_model
     }
 
     /**
+     * Funcionalidade para verificar se o id pertence à algum user
+     * Retorna sempre bool, true se existir ou false se não existir
+     */
+    public function user_id_exists(String $user_id): Bool
+    {
+        if(is_null($user_id))
+            return false;
+        
+        $query = $this->select('Users', 'user_id', array('user_id' => $user_id));
+
+        return $query <> NULL;
+    }
+
+    /**
      * Funcionalidade para testar se o username bate com algum existente na DB
      * Usado por exemplo no login para verificar a existência do user sem trazer todo seu dado
      */
-    public function user_exists(Array|String $userdata): Bool
+    public function username_exists(Array|String $userdata): Bool
     {
         $username = is_array($userdata) ? $userdata['username'] : $userdata;
 

@@ -23,7 +23,6 @@ abstract class My_controller extends CI_Controller
 	private const CSS_PATH = 'css';
 	private const JS_PATH = 'js';
 	private const IMAGES_PATH = 'images';
-	private const MAIN_CSS_PATH = 'mainStyle';
 	private const NAV_CSS_PATH = 'navStyle';
 
 	// Configs para configurações de variaveis
@@ -42,9 +41,6 @@ abstract class My_controller extends CI_Controller
 
 		// Cria os arrays multidimensionais
 		$this->create_data_arrays();
-		
-		// Define os ficheiros de css main do site
-		$this->set_css_files(self::MAIN_CSS_PATH);
 		
 		// Verifica se o user não está loggado e não está na pagina de login ou criação de conta volta para o login
 		if(!$this->session->userdata('username') && $this->uri->segment(1) <> 'login' && $this->uri->segment(1) <> 'create_account')

@@ -1,14 +1,24 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
+
+//! Ainda é preciso controlar a parte pública e privada dos users
+/**
+ * Controller que controla tudo com relação ao user para o público
+ * Como a visão da conta e de seus sites a todos
+ */
 class Profile extends My_controller 
-{
-	// Regras de logins das contas
+{	
+	/**
+	 * Guarda toda a informação acessível ao público do user na url
+	 * ATENÇÃO que esse controller mostra tudo que é público, então o modelo
+	 * vai carregar apenas as informação públicas
+	 */
 	private $user;
 
 	/**
 	 * É uma função obrigatória que carrega as funcionalidades usadas durante esse mesmo controller
-	 * Como a instancia dos models
+	 * Nesse caso irá carregar o user na url
 	 */
 	public function constructor(): Void
 	{
@@ -17,7 +27,8 @@ class Profile extends My_controller
 
 		// Carrega o modelo usado no Login
 		$this->load->model('Account_model', 'account_model');
-
+ 
+		// Guarda os dados públicos do user
 		$this->user = $this->account_model->get_user($username);
 
 		// Verifica se o user com esse username existe
@@ -46,6 +57,7 @@ class Profile extends My_controller
 		$this->create_site_details('Profile', 'profile/index-view', 'profileStyle');
 	}
 	
+	/*
 	public function account(): Void
 	{
 		// Envia as variaveis de link
@@ -58,4 +70,5 @@ class Profile extends My_controller
 		// Cria a view sem o menu
 		$this->create_site_details('Account Settings', 'profile/account-view', 'profileStyle');
 	}
+	*/
 }
