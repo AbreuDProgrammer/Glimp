@@ -199,7 +199,7 @@ class Account_model extends My_model
     private function is_logged(Array $where): Bool
     {
         $is_logged = $this->select('Users', 'is_logged', $where);
-        return $is_logged[0]['is_logged'];
+        return $is_logged['is_logged'];
     }
 
     // ------------------------------ Consultas ------------------------------
@@ -234,7 +234,7 @@ class Account_model extends My_model
             return NULL;
 
         $id = $this->select('Users', 'user_id', $where);
-        return $id[0]['user_id'] ?? NULL;
+        return $id['user_id'] ?? NULL;
     }
     
     /**
@@ -270,23 +270,15 @@ class Account_model extends My_model
         {
             // NÃO É O DONO DA CONTA
 
-            // Recebe a lista de permissões das datas do user
-            $permissions = $this->get_user_data_permissions($user_asked_id);
-            //$ables_permissions = $this->get_permissions()
-            //! Aqui ainda falta ver se o user é amigo do outro para trazer as permissões necessárias
-            return $this->select('Users', $permissions, $where);
-        }
+            // Recebe a lista de permissões das datas do user para o user que está pedindo
+            $ables_permissions = $this->get_user_data_permissions($user_asked_id, $user_asking_id);
             
-        if(!$this->is_logged(array('user_id' => $user_sender['user_id'])) || !$this->is_logged($where))
-            return NULL;
-
-        $user_asked_session = $this->get_session($where);
-        $user_asking_session = $this->get_session(array('user_id' => $user_sender['user_id']));
-
-        if($user_asked_session !== $user_asking_session)
-            return NULL;
-
-        return $this->get('Users', $where);
+            return $this->select('Users', $ables_permissions, $where);
+        }
+        else
+        {
+            return $this->get('Users', $where);
+        }
     }
 
     /**
@@ -312,13 +304,48 @@ class Account_model extends My_model
     private function get_session(Int $id): ?Int
     {
         $session_id = $this->select('Users', 'session_id', array('user_id' => $id));
-        return $session_id[0]['session_id'] ?? NULL;
+        return $session_id['session_id'] ?? NULL;
     }
-    private function get_user_data_permissions(Int $id): ?Array
+    private function get_user_data_permissions(Int $user_id_sender, Int $user_id_asked): ?Array
     {
-        $permissions = $this->get('UserDataPermissions', array('user_id_data_permissions' => $id));
+        $permissions = $this->get('UserDataPermissions', array('user_id_data_permissions' => $user_id_asked));
         unset($permissions['user_id_data_permissions']);
-        return $permissions[0] ?? NULL;
+        $relation = $this->get_users_relate($user_id_sender, $user_id_asked);
+
+        $type = array();
+        if($relation == 'same'){
+            $type[] = 'private';
+            $type[] = 'protected';
+        }
+        if($relation == 'friends')
+            $type[] = 'protected';
+        $type[] = 'public';
+
+        $ables = array();
+        foreach($permissions as $key => $value)
+        {
+            if(in_array($value, $type))
+                $ables[] = $key;
+        }
+        return $ables ?? NULL;
+    }
+    private function get_users_relate(Int $user_id_sender, Int $user_id_asked): String
+    {
+        if($user_id_asked === $user_id_sender)
+            return 'same';
+
+        $query = $this->get('Friendships', array(
+            'user_id_sender' => $user_id_sender,
+            'user_id_recipient' => $user_id_asked
+        ));
+        if(is_null($query))
+            $query = $this->get('Friendships', array(
+                'user_id_sender' => $user_id_asked,
+                'user_id_recipient' => $user_id_sender
+            ));
+        if(is_null($query))
+            return 'strangers';
+        return 'friends';
     }
 
     /**
@@ -335,7 +362,7 @@ class Account_model extends My_model
         );
         $username_query = $this->select('Users', 'password', $where);
 
-        return $username_query[0]['password'] ?? NULL;
+        return $username_query['password'] ?? NULL;
     }
     
     // ------------------------------ Atualizações ------------------------------
@@ -365,12 +392,7 @@ class Account_model extends My_model
     private function set_permissions_default(Int $id): Void
     {
         $default_data = array(
-            'user_id_data_permissions' => $id,
-            'email' => 'private',
-            'phone' => 'private',
-            'name' => 'private',
-            'birthday' => 'private',
-            'description' => 'private'
+            'user_id_data_permissions' => $id
         );
         $this->insert('UserDataPermissions', $default_data);
     }

@@ -38,11 +38,13 @@ CREATE TABLE UserAppsPermissions (
  */
 CREATE TABLE UserDataPermissions (
     user_id_data_permissions int(11), /* O Id do que se refere as permissões de visualização */
-    email varchar(9),
-    phone varchar(9),
-    name varchar(9),
-    birthday varchar(9),
-    description varchar(9)
+    username varchar(9) DEFAULT 'public',
+    image_path varchar(255) DEFAULT 'public',
+    email varchar(9) DEFAULT 'private',
+    phone varchar(9) DEFAULT 'private',
+    name varchar(9) DEFAULT 'private',
+    birthday varchar(9) DEFAULT 'private',
+    description varchar(9) DEFAULT 'private'
 );
 
 /** 

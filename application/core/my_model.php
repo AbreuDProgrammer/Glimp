@@ -62,6 +62,8 @@ abstract class My_model extends CI_Model
         if($where_array)
             $this->db->where($where_array);
         $query = $this->db->get($table);
+        if($query->num_rows() == 1)
+            return $query->row_array();
         return $query->result_array();
     }
 
