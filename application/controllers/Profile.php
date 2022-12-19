@@ -1,8 +1,6 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-
-//! Ainda é preciso controlar a parte pública e privada dos users
 /**
  * Controller que controla tudo com relação ao user para o público
  * Como a visão da conta e de seus sites a todos
@@ -50,7 +48,7 @@ class Profile extends My_controller
 		 * Pode ser passado o user aqui porque os dados pessoais
 		 * só serão mostrados se o user decidir que sim
 		 */
-		$this->set_body_data($this->user);
+		$this->set_body_data($this->user??NULL);
 		
 		// Cria a view sem o menu
 		$this->create_site_details('Profile', 'profile/index-view', 'profileStyle');

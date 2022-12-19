@@ -136,9 +136,13 @@ class Account_model extends My_model
      * e o segundo é passado e verificado na constante
      * 
      * Sempre consuilta pelo user_id porque é impossível de ser alterado
+     * 
+     * Quando a consulta for feita via array, apenas retorna se existir
      */
-    private function user_exists(String|Int $userdata, String $method): Bool
+    private function user_exists(Array|String|Int $userdata, String $method): Bool
     {
+        if(is_array($userdata))
+            return $this->select('Users', 'user_id', $userdata) <> NULL;
         if(!in_array($method, self::UNIQUE_DATA))
             return false;
         return $this->select('Users', 'user_id', array($method => $userdata)) <> NULL;
@@ -156,37 +160,39 @@ class Account_model extends My_model
     {
         $user_id = is_array($userdata) ? $userdata['user_id'] : $userdata;
 
-        if(is_null($user_id))
-            return false;
-
         return $this->user_exists($user_id, 'user_id');
     }
+
     public function username_exists(Array|String $userdata): Bool
     {
         $username = is_array($userdata) ? $userdata['username'] : $userdata;
-
-        if(is_null($username))
-            return false;
         
         return $this->user_exists($username, 'username');
     }
+
     public function email_exists(Array|String $userdata): Bool
     {
         $email = is_array($userdata) ? $userdata['email'] : $userdata;
 
-        if(is_null($email))
-            return false;
-        
         return $this->user_exists($email, 'email');
     }
+
     public function phone_exists(Array|Int $userdata): Bool
     {
         $phone = is_array($userdata) ? $userdata['phone'] : $userdata;
-
-        if(is_null($phone))
-            return false;
         
         return $this->user_exists($phone, 'phone');
+    }
+
+    /**
+     * Essa funcionalidade verifica se o user existe, 
+     * independentimente do tipo de data que for passado,
+     * recomendo usar apenas nas funcionalidades que 
+     * não sabemos qual tipo de consulta está sendo feita
+     */
+    public function userdata_exists(Array $userdata)
+    {
+        return $this->user_exists($userdata, 'phone');
     }
 
     /**
@@ -257,6 +263,13 @@ class Account_model extends My_model
          * retorna e para a funcionalidade aqui
          */
         if(!$this->user_id_exists($user_sender))
+            return NULL;
+
+        /**
+         * Se o user que está sendo pedido não existir
+         * retorna null e para a funcionalidade aqui
+         */
+        if(!$this->userdata_exists($where))
             return NULL;
 
         $user_asked_id = $this->get_user_id($where);

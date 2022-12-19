@@ -134,10 +134,15 @@ abstract class My_controller extends CI_Controller
 	/**
 	 * Funcionalidade que cria uma variavel para o lugar certo da view
 	 * É apenas chamada pela própria classe
+	 * 
+	 * Se o array passado for NULL retorna sem preencher nada
 	 */
-	private function set_data(Array $array, String $where): Void
+	private function set_data(?Array $array, String $where): Void
 	{
 		if(!in_array($where, self::ARRAY_DATAS))
+			return;
+
+		if($array == NULL)
 			return;
 			
 		foreach($array as $key => $value)
@@ -148,20 +153,21 @@ abstract class My_controller extends CI_Controller
 	 * Funcionalidades que chamam a mesma funcionalidade com constantes diferentes
 	 * Cada uma envia para um lugar da view diferente
 	 * Feita 3 funcionalidades para simplificar o codigo na parte do controller
+	 * Se nada for passado é entregue null para o set_data
 	 */
-	protected function set_footer_data(Array $array): Void
+	protected function set_footer_data(?Array $array): Void
 	{
 		$this->set_data($array, self::FOOTER_DATA);
 	}
-	protected function set_body_data(Array $array): Void
+	protected function set_body_data(?Array $array): Void
 	{
 		$this->set_data($array, self::BODY_DATA);
 	}
-	protected function set_header_data(Array $array): Void
+	protected function set_header_data(?Array $array): Void
 	{
 		$this->set_data($array, self::HEADER_DATA);
 	}
-	protected function set_nav_data(Array $array): Void
+	protected function set_nav_data(?Array $array): Void
 	{
 		$this->set_data($array, self::NAV_DATA);
 	}
@@ -202,13 +208,13 @@ abstract class My_controller extends CI_Controller
 	// Troca de controlador
 	protected function go_to(String $action): Void
 	{
-		header('Location: '.$action);
+		redirect(base_url($action));
 	}
 
 	// Troca de controlador para a pagina inicial sem o "/home/"
 	protected function go_to_home(): Void
 	{
-		header('Location: '.base_url());
+		redirect(base_url());
 	}
 
 	/**
@@ -267,7 +273,7 @@ abstract class My_controller extends CI_Controller
 	 * Essa verificação só existe para que a DB não seja ativada sem propósito, já que
 	 * se os dados não passarem nem as regras com certeza não existem
 	 */
-	protected function test_form(Bool $listener_response, String $flashdata_status, String $flashdata_name): String|NULL
+	protected function test_form(Bool $listener_response, String $flashdata_status, String $flashdata_name): ?String
 	{
 		// Se o status está definido retorna a mensagem da tentativa
 		if($this->session->flashdata($flashdata_status) !== NULL){
