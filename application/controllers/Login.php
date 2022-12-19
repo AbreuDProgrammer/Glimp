@@ -62,7 +62,7 @@ class Login extends My_controller
 
 		// Se a funcionalidade foi executada e o user está logado
 		if($login_executed && $this->session->userdata('username'))
-			$this->go_to(base_url());
+			$this->go_to_home();
 	}
 
 	public function create_account(): Void
@@ -93,7 +93,7 @@ class Login extends My_controller
 		
 		// Se a funcionalidade foi executada e o user está logado
 		if($account_creation_executed && $this->session->userdata('username'))
-			$this->go_to(base_url());
+			$this->go_to_home();
 	}
 
 	public function logout(): Void
