@@ -530,17 +530,3 @@ $config['rewrite_short_tags'] = FALSE;
 | Array:		array('10.0.1.200', '192.168.5.0/24')
 */
 $config['proxy_ips'] = '';
-
-/**
- * Criando meu autoloader para classes em geral
- * Uso o mesmo usado no mvc
- * http://php.net/manual/pt_BR/function.autoload.php
- */
-function leo_autoloader($class_name) {
-    $file = APPPATH.'/classes/class-'.$class_name.'.php';
-    if (!file_exists($file))
-        return;
-    // inclui o ficheiro da classe
-    require_once $file;
-}
-spl_autoload_register('leo_autoloader');

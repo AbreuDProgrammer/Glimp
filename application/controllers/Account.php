@@ -6,8 +6,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * Como as definições do user com relação as permissões
  */
 class Account extends My_controller
-{	
+{
 	private $account;
+	private $user_permissions;
 
 	// Constantes para os formularios
 	private const USERNAME_RULES = 'required|min_length[3]|max_length[12]';
@@ -22,25 +23,30 @@ class Account extends My_controller
 	public function constructor(): Void
 	{
 		// Recebe o username do perfil
-		$username = $this->uri->segment(1);
+		$user = array(
+			'username' => $this->uri->segment(1)
+		);
 
 		// Carrega o modelo usado no Login
 		$this->load->model('Account_model', 'account_model');
-
+		
 		// Verifica se o user que está na página é o mesmo que está logado
-		if($username <> $this->session->userdata('username')){
+		if($user['username'] <> $this->session->userdata('username')){
 			$this->go_to_home();
 			return;
 		}
  
 		// Faz a requisição do user e verifica também no model se os dados estão corretos
-		$this->account = $this->account_model->get_user_by_username($username, $this->session->userdata());
+		$this->account = $this->account_model->get_userdata($this->session->userdata(), $user);
 		
 		// Verifica se o user com esse username existe
 		if(!$this->account){
 			$this->go_to_home();
 			return;
 		}
+
+		// Cria a variavel de permissões da informação do user
+		$this->user_permissions = $this->account_model->get_data_permissions($this->account['user_id']);
 	}
 
 	/**
@@ -73,7 +79,7 @@ class Account extends My_controller
 		$info = $this->test_form($update_executed, 'update_status', 'update_info');
 
 		$this->set_error_data(array('form_info' => $info));
-
+		
 		$this->set_body_data($this->account);
 		
 		$this->create_site_details('Account Details Settings', 'account/account-details-view', 'accountStyle');
@@ -85,7 +91,7 @@ class Account extends My_controller
 	/**
 	 * Funcionalidade para alterar os dados do user
 	 * A senha é alterada em outra view
-	 * 
+	 *
 	 * Recarrega a pagina quando atualizar os dados
 	 */
 	public function permissions(): Void
@@ -96,7 +102,7 @@ class Account extends My_controller
 
 		$this->set_error_data(array('form_info' => $info));
 
-		$this->set_body_data($this->account);
+		$this->set_body_data($this->user_permissions);
 		
 		$this->create_site_details('Account Permissions Settings', 'account/account-permissions-view', 'accountStyle');
 
@@ -142,26 +148,21 @@ class Account extends My_controller
 			return;
 
 		$user = array(
-			'user_id' => $post['user_id'],
-			'username' => $post['username'],
+			'user_id_data_permissions' => $post['user_id_data_permissions'],
 			'email' => $post['email'],
 			'phone' => $post['phone'],
 			'name' => $post['name'],
 			'birthday' => $post['birthday']
 		);
 
-		print_r($post);
-		//!!! Para fazer ainda -------------------------------------------------------------------------
-		return;
-
 		$update_query = $this->account_model->update_user_permissions($user, $this->session->userdata());
 		if(!$update_query){
-			$this->session->set_flashdata('update_status', 0);
-			$this->session->set_flashdata('update_info', 'Server error');
+			$this->session->set_flashdata('permissions_data_update_status', 0);
+			$this->session->set_flashdata('permissions_data_update_info', 'Server error');
 			return;
 		}
 
-		$this->session->set_flashdata('update_status', 1);
-		$this->session->set_flashdata('update_info', 'User permissions updated!');
+		$this->session->set_flashdata('permissions_data_update_status', 1);
+		$this->session->set_flashdata('permissions_data_update_info', 'User permissions updated!');
 	}
 }

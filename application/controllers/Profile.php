@@ -21,15 +21,17 @@ class Profile extends My_controller
 	public function constructor(): Void
 	{
 		// Recebe o username do perfil
-		$username = $this->uri->segment(1);
+		$username = array(
+			'username' => $this->uri->segment(1)
+		);
 
-		// Carrega o modelo usado no Login
+		// Carrega o modelo
 		$this->load->model('Account_model', 'account_model');
  
-		// Guarda os dados públicos do user
-		$this->user = $this->account_model->get_user_by_username($username, $this->session->userdata());
+		// Guarda os dados do user dependendo do nivel de relação entre eles
+		$this->user = $this->account_model->get_userdata($this->session->userdata(), $username);
 
-		// Verifica se o user com esse username existe
+		// Verifica se o user existe
 		if(!$this->user){
 			$this->go_to_home();
 			return;
@@ -48,7 +50,7 @@ class Profile extends My_controller
 		 * Pode ser passado o user aqui porque os dados pessoais
 		 * só serão mostrados se o user decidir que sim
 		 */
-		$this->set_body_data($this->user??NULL);
+		$this->set_body_data($this->user);
 		
 		// Cria a view sem o menu
 		$this->create_site_details('Profile', 'profile/index-view', 'profileStyle');

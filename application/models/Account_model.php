@@ -43,7 +43,7 @@ class Account_model extends My_model
             return false;
             
         // Cria a query onde busca apenas pelo username
-        $username_query = $this->username_exists($user['username']);
+        $username_query = $this->user_exists(array( 'username' => $user['username']));
 
         // Verifica se o user existe
         if(!$username_query)
@@ -80,7 +80,7 @@ class Account_model extends My_model
         if(!isset($user['username']) || !isset($user['password']))
             return false;
 
-        $username_exists = $this->username_exists($user['username']);
+        $username_exists = $this->user_exists(array('username' => $user['username']));
 
         if($username_exists)
             return false;
@@ -118,81 +118,56 @@ class Account_model extends My_model
         $this->set_session_id($id, 0);
     }
 
+    // ------------------------------------------------------------ Modelo ------------------------------------------------------------
+    /**
+     * A partir daqui são as funcionalidades da classe modelo
+     * que são seguem sempre o mesmo padrão, como o de login e logout.
+     * 
+     * Então é de extrema importância que os passos para ser feitas as 
+     * consultas sigam uma ordem específica, dentro e fora da classe.
+     * 
+     * A ordem de qualquer pedido sempre sequirá uma mesma ordem:
+     * 1 - Verificar se o user que esta sendo pedido existe
+     * 2 - Se sim buscar pelo id desse user
+     * 3 - Quando encontrado as operações seguintes devem ser feitas usando o id
+     */
+
+    /**
+     * Essa funcionalidade é essencial para a classe,
+     * ela procura num array de existe alguma informação que
+     * possa ser usada para a pesquisa do user na DB,
+     * se exstir retorna uma cláusula where com o modelo de 
+     * pesquisa para a informação.
+     */
+    private function get_searchable_colunm(Array $userdata): ?Array
+    {
+        $where_clause = array();
+        foreach(self::UNIQUE_DATA as $possible_key)
+        {
+            if(isset($userdata[$possible_key]))
+            {
+                $where_clause[$possible_key] = $userdata[$possible_key];
+                break;
+            }
+        }
+        return $where_clause ?? NULL;
+    }
+
     // ------------------------------ Verificações ------------------------------
     /**
      * Essa aba separa as funcionalidades que ficam responsáveis apenas por
-     * retornar TRUE or FALSE para verificações sobre os user
+     * retornar TRUE or FALSE para verificações sobre os user.
      * 
-     * Recomendado usar essas funcionalidades dentro da clausula if
+     * Recomendado usar essas funcionalidades dentro da clausula if.
      */
 
     /**
-     * Funcionalidade que consulta a tabela
-     * 
-     * Usada por outras funcionalidades para controlar em um
-     * só lugar as ligações por meio de constantes
-     * 
-     * Apenas aceita String ou Int como primeiro parametro,
-     * e o segundo é passado e verificado na constante
-     * 
-     * Sempre consuilta pelo user_id porque é impossível de ser alterado
-     * 
-     * Quando a consulta for feita via array, apenas retorna se existir
+     * Essa funcionalidade usa a consulta do id para verificar se 
+     * foi retornado alguma coisa.
      */
-    private function user_exists(Array|String|Int $userdata, String $method): Bool
+    public function user_exists(Array $userdata): Bool
     {
-        if(is_array($userdata))
-            return $this->select('Users', 'user_id', $userdata) <> NULL;
-        if(!in_array($method, self::UNIQUE_DATA))
-            return false;
-        return $this->select('Users', 'user_id', array($method => $userdata)) <> NULL;
-    }
-
-    /**
-     * Funcionalidades que redirecionam à mesma funcionalidade
-     * 
-     * Verificam se o username ou user_id ou email ou phone 
-     * existem e pertencem à algum user.
-     * 
-     * É possivel passar a userdata como Array associativo ou como String
-     */
-    public function user_id_exists(Array|Int $userdata): Bool
-    {
-        $user_id = is_array($userdata) ? $userdata['user_id'] : $userdata;
-
-        return $this->user_exists($user_id, 'user_id');
-    }
-
-    public function username_exists(Array|String $userdata): Bool
-    {
-        $username = is_array($userdata) ? $userdata['username'] : $userdata;
-        
-        return $this->user_exists($username, 'username');
-    }
-
-    public function email_exists(Array|String $userdata): Bool
-    {
-        $email = is_array($userdata) ? $userdata['email'] : $userdata;
-
-        return $this->user_exists($email, 'email');
-    }
-
-    public function phone_exists(Array|Int $userdata): Bool
-    {
-        $phone = is_array($userdata) ? $userdata['phone'] : $userdata;
-        
-        return $this->user_exists($phone, 'phone');
-    }
-
-    /**
-     * Essa funcionalidade verifica se o user existe, 
-     * independentimente do tipo de data que for passado,
-     * recomendo usar apenas nas funcionalidades que 
-     * não sabemos qual tipo de consulta está sendo feita
-     */
-    public function userdata_exists(Array $userdata)
-    {
-        return $this->user_exists($userdata, 'phone');
+        return $this->get_user_id($userdata) <> NULL;
     }
 
     /**
@@ -230,97 +205,62 @@ class Account_model extends My_model
      * Funcionalidade que retorna o id de qualquer user 
      * por alguma data única.
      * 
+     * Para isso percorre o array de datas unicas e 
+     * verifica se alguma está no array passado,
+     * quando acha insere no novo array.
+     * 
      * Todas as outras consultas serão feitas pelo id do user
      * então essa funcionalidade é essencial para toda a classe.
      */
-    private function get_user_id(Array $where): ?Int
+    private function get_user_id(Array $userdata): ?Int
     {
-        $clause = array_keys($where)[0];
-        if(!in_array($clause, self::UNIQUE_DATA))
-            return NULL;
+        $where = $this->get_searchable_colunm($userdata);
 
-        $id = $this->select('Users', 'user_id', $where);
-        return $id['user_id'] ?? NULL;
-    }
-    
-    /**
-     * Para unificar as conultas, essa funcionalidade vai
-     * verificar qual user quer recolher, qual o id ou username ou email ou phone
-     * desse user e irá retornar toda a informação presente no user.
-     * 
-     * E mais importante ainda irá verificar se o user que está sendo pedido está loggado
-     * e se sim se tem a mesma sessão que está sendo feito o pedido.
-     * 
-     * É passado nos parametros qual o metodo da clausula where,
-     * e as informações do user que está fazendo a consulta.
-     * 
-     * As consultas só podem ser feitas por um user ativo na plataforma.
-     */
-    private function get_user(Array $where, Array $user_sender): ?Array
-    {
-        /**
-         * Se o user que está fazendo a consulta não existe
-         * retorna e para a funcionalidade aqui
-         */
-        if(!$this->user_id_exists($user_sender))
-            return NULL;
+        if(!$where)
+            return false;
 
-        /**
-         * Se o user que está sendo pedido não existir
-         * retorna null e para a funcionalidade aqui
-         */
-        if(!$this->userdata_exists($where))
-            return NULL;
-
-        $user_asked_id = $this->get_user_id($where);
-        $user_asking_id = $user_sender['user_id'];
-
-        /** 
-         * Se os ids não forem o mesmo não é o dono da conta 
-         * que está logado.
-         */
-        if($user_asked_id <> $user_asking_id)
-        {
-            // NÃO É O DONO DA CONTA
-
-            // Recebe a lista de permissões das datas do user para o user que está pedindo
-            $ables_permissions = $this->get_user_data_permissions($user_asked_id, $user_asking_id);
-            
-            return $this->select('Users', $ables_permissions, $where);
-        }
-        else
-        {
-            $user = $this->get('Users', $where);
-            unset($user['password']);
-            return $user;
-        }
+        return $this->select('Users', 'user_id', $where)['user_id'] ?? NULL;
     }
 
     /**
-     * Funcionalidades que chamam o get_user com diferentes where
+     * Essa funcionalidade vai receber:
+     * 1 - O user que está fazendo o pedido (user_asking).
+     * 2 - O user que está sendo pedido (user_asked).
+     * 
+     * Vai verificar qual o nivel de relação entre eles e devolver
+     * toda a informação que estiver no seu nível:
+     * Public - Se os users não tiverem nenhuma relação.
+     * Protected - Se os users forem amigos.
+     * Private - Se os users forem os mesmos.
+     * 
+     * Password não é devolvida mesmo no private.
+     * 
+     * Essa funcionalidade deve ser usada nos controllers para
+     * receber toda a informação possível de user para mostrar
+     * ao outro user.
      */
-    public function get_user_by_id(Array|String $userdata, Array $user_sender): ?Array
+    public function get_userdata(Array $user_asking, Array $user_asked): ?Array
     {
-        $user_id = is_array($userdata) ? $userdata['user_id'] : $userdata;
-        return $this->get_user(array('user_id' => $user_id), $user_sender);
+        if(!$this->user_exists($user_asking) || !$this->user_exists($user_asked))
+            return NULL;
+
+        $user_asking_id = $this->get_user_id($user_asking);
+        $user_asked_id = $this->get_user_id($user_asked);
+
+        $info_allowed = $this->get_user_data_permissions($user_asking_id, $user_asked_id);
+        $info_allowed[] = 'user_id';
+
+        $query = $this->select('Users', $info_allowed, array('user_id' => $user_asked_id));
+        
+        return $query ?? NULL;
     }
 
-    public function get_user_by_username(Array|String $userdata, Array $user_sender): ?Array
+    public function get_data_permissions(Int $user_id_asked): ?Array
     {
-        $username = is_array($userdata) ? $userdata['username'] : $userdata;
-        return $this->get_user(array('username' => $username), $user_sender);
+        $permissions = $this->get('UserDataPermissions', array('user_id_data_permissions' => $user_id_asked));
+        return $permissions ?? NULL;
     }
 
-    
-    /**
-     * Funcionalidades usadas apenas na própria classe,
-     * todas as clausulas where resperam pelo id do user
-     */
-    private function get_session(Int $id): ?Int
-    {
-        $session_id = $this->select('Users', 'session_id', array('user_id' => $id));
-        return $session_id['session_id'] ?? NULL;
-    }
     private function get_user_data_permissions(Int $user_id_sender, Int $user_id_asked): ?Array
     {
         $permissions = $this->get('UserDataPermissions', array('user_id_data_permissions' => $user_id_asked));
@@ -420,6 +360,21 @@ class Account_model extends My_model
             'user_id_data_permissions' => $id
         );
         $this->insert('UserDataPermissions', $default_data);
+    }
+
+    public function update_user_permissions(Array $permissions_data, Array $user_sender): Bool
+    {
+        if(!isset($permissions_data['user_id_data_permissions']))
+            return FALSE;
+
+        if(!$this->user_exists(array('user_id' => $permissions_data['user_id_data_permissions'])))
+            return FALSE;
+
+        if($permissions_data['user_id_data_permissions'] <> $user_sender['user_id'])
+            return FALSE;
+        
+        $update = $this->update('UserDataPermissions', $permissions_data, array('user_id_data_permissions' => $permissions_data['user_id_data_permissions']));
+        return $update <> NULL;
     }
 
     /**
