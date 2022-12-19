@@ -297,7 +297,7 @@ class Account_model extends My_model
     }
 
     /**
-     * Funcionalidades que chamam o get_user_private com diferentes wheres
+     * Funcionalidades que chamam o get_user com diferentes where
      */
     public function get_user_by_id(Array|String $userdata, Array $user_sender): ?Array
     {
@@ -328,14 +328,24 @@ class Account_model extends My_model
         $relation = $this->get_users_relate($user_id_sender, $user_id_asked);
 
         $type = array();
-        if($relation == 'same'){
-            $type[] = 'private';
-            $type[] = 'protected';
-        }
-        if($relation == 'friends')
-            $type[] = 'protected';
-        $type[] = 'public';
 
+        /**
+         * Está certo sem os break's
+         * quando o user for o próprio a pedir
+         * tem todas as informações possiveis,
+         * quando for amigo tem as protecteds e publics
+         * e quando não for ninguém tem apenas public
+         */
+        switch($relation)
+        {
+            case 'same':
+                $type[] = 'private';
+            case 'friends':
+                $type[] = 'protected';
+            default:
+                $type[] = 'public';
+        }
+        
         $ables = array();
         foreach($permissions as $key => $value)
         {

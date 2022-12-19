@@ -1,19 +1,50 @@
-/* Tabela dos users */
 CREATE TABLE Users (
-  user_id int(11),
-  username varchar(255), /* Username único de cada user, alterável */
-  password varchar(255), /* Password sha256 com pelo menos 1 número e uma maiúscula */
+  user_id int(11) AUTO_INCREMENT, /* Id único de cada user AI */
+  username varchar(255) NOT NULL, /* Username único de cada user, alterável */
+  password varchar(255) NOT NULL, /* Password sha256 com pelo menos 1 número e uma maiúscula */
   email varchar(255), /* Email único de cada user com verificação, alterável */
   phone int(9), /* Número de telemóvel único, alterável */
   name varchar(255), /* Nome de cada user, sem números */
-  email_extra varchar(255), /* Email reserva único de cada user com verificação, alterável */
+  image_path varchar(255), /* Path da foto de perfil */
   birthday date, /* Data do aniversário */
   description text, /* Descrição do user */
+  last_time_online datetime, /* Última vez que o user esteve online */
+  email_extra varchar(255), /* Email reserva único de cada user com verificação, alterável */
+  is_logged boolean, /* TRUE or FALSE para verificar se o user está logado */
   session_id int, /* Sessão salva quando iniciado em algum browser */
-  apps_permissions text, /* Permissões que o user liberou para com outros apps array json_encode */
   configs text, /* Configurações dos users sobre qualquer definição salva array json_encode */
-  is_logged boolean, /* Boolean para saber se o user está logado */
-  PRIMARY KEY(username)
+  PRIMARY KEY(user_id)
+);
+
+/**
+ * Tabela que guarda quais apps o user permitiu ser acedida
+ * Os dados serão organizados como (public, protected, private) varchar(9)
+ * Public é visivel para todos
+ * Protected é visiveis para amigos
+ * Private não é visivel a ninguém
+ */
+CREATE TABLE UserAppsPermissions (
+    user_id_apps_permissions int(11), /* O Id do user que se refere as permissões de apps */
+    spotify varchar(9)
+);
+
+/**
+ * Tabela que guarda quais os dados pessoais dele
+ * serão publicos, como email, birthday etc.
+ * Os dados pessoais serão organizados como (public, protected, private) varchar(9)
+ * Public é visivel para todos
+ * Protected é visiveis para amigos
+ * Private não é visivel a ninguém
+ */
+CREATE TABLE UserDataPermissions (
+    user_id_data_permissions int(11), /* O Id do que se refere as permissões de visualização */
+    username varchar(9) DEFAULT 'public',
+    image_path varchar(255) DEFAULT 'public',
+    email varchar(9) DEFAULT 'private',
+    phone varchar(9) DEFAULT 'private',
+    name varchar(9) DEFAULT 'private',
+    birthday varchar(9) DEFAULT 'private',
+    description varchar(9) DEFAULT 'private'
 );
 
 /** 
@@ -22,18 +53,20 @@ CREATE TABLE Users (
  * Se esse mesmo user voltar a bloquea-lo, o status é mudado novamente
  */
 CREATE TABLE UserBlocks (
-  username_sender int(11), /* Id do user que fez o block */
-  username_blocked int(11), /* Id do user que foi bloqueado */
+  user_block_id int(13), /* Id do block */
+  user_id_sender int(11), /* Id do user que fez o block */
+  user_id_blocked int(11), /* Id do user que foi bloqueado */
+  when_blocked datetime, /* A data em que o user bloqueou ou foi bloqueado */
   block_status varchar(80) /* O status do block (blocked, accessible) */
 );
 
-/** 
- * Tabela que controla todos os grupos bloqueados por outro user 
+/**
+ * Tabela que controla todos os grupos bloqueados por outro user
  * Se um user desbloqueia o grupo a coluna não é apagada, o status muda
  * Se esse mesmo user voltar a bloquea-lo, o status é mudado novamente
  */
 CREATE TABLE GroupBlocks (
-  username_sender int(11), /* Id do user que fez o block */
+  user_id_sender int(11), /* Id do user que fez o block */
   group_id_blocked int(11), /* Id do grupo que foi bloqueado */
   block_status varchar(80) /* O status do block (blocked, accessible) */
 );
@@ -47,8 +80,8 @@ CREATE TABLE GroupBlocks (
  */
 CREATE TABLE Friendships (
   friendship_id int(11) AUTO_INCREMENT, /* Id da ligação de amizade */
-  username_sender int(11), /* Id do user que enviou o pedido de amizade */
-  username_recipient int(11), /* Id do user que recebeu o pedido de amizade */
+  user_id_sender int(11), /* Id do user que enviou o pedido de amizade */
+  user_id_recipient int(11), /* Id do user que recebeu o pedido de amizade */
   friendship_status varchar(80), /* Status da amizade (waiting, friends, best_friends, refused) */
   when_started date, /* Data em que o pedido de amizade foi aceito */
   chat_id int(11), /* Id do chat da amizade */
@@ -73,7 +106,7 @@ CREATE TABLE Chats (
 CREATE TABLE Messages (
   message_id int(11) AUTO_INCREMENT, /* O Id AI da mensagem */
   message_info text, /* A mensagem txt, img ou video do user json_encode */
-  username_sender int(11), /* Id do user que enviou a mensagem */
+  user_id_sender int(11), /* Id do user que enviou a mensagem */
   time_sent datetime, /* O ano, mês, dia, hora, minuto e segundo que a mensagem foi enviada */
   PRIMARY KEY(message_id)
 );
@@ -81,14 +114,14 @@ CREATE TABLE Messages (
 /* Controla as mensagens recebidas */
 CREATE TABLE ReceivedMessages (
   message_id_received int(11), /* Id da mensagem que foi recebida */
-  username_recipient int(11), /* Id do user que recebeu essa mensagem */
+  user_id_recipient int(11), /* Id do user que recebeu essa mensagem */
   when_received datetime /* O dia e a hora que a mensagem foi recebida */
 );
 
 /* Controla as mensagens lidas */
 CREATE TABLE ReadMessages (
   message_id_read int(11), /* Id da mensagem que foi lida */
-  username_recipient int(11), /* Id do user que leu essa mensagem */
+  user_id_recipient int(11), /* Id do user que leu essa mensagem */
   when_received datetime /* O dia e a hora que a mensagem foi lida */
 );
 
@@ -99,8 +132,8 @@ CREATE TABLE ReadMessages (
  */
 CREATE TABLE Groups (
   group_id int(11) AUTO_INCREMENT, /* Id do grupo AI */
-  owner_username int(11), /* Id do user que criou o grupo */
-  adm_username text, /* Ids dos users que receberam permissões de adm */
+  owner_id int(11), /* Id do user que criou o grupo */
+  adm_ids text, /* Ids dos users que receberam permissões de adm */
   group_description text, /* Descrição do grupo */
   when_started datetime, /* O dia e a hora em que o grupo foi criado */
   PRIMARY KEY(group_id)
@@ -117,14 +150,14 @@ CREATE TABLE GroupConfig (
 
 /* Controla todos os membros dos grupo */ 
 CREATE TABLE GroupsMembers(
-  username_member int(11), /* Id do user que é membro de um grupo */
+  user_id_member int(11), /* Id do user que é membro de um grupo */
   group_id int(11), /* Id do grupo que é membro */
   when_joined datetime /* Quando entrou no grupo */
 );
 
 /* Controla todos os adm dos grupos */
 CREATE TABLE GroupsAdm (
-  username_adm int(11), /* Id do user que é admin de algum grupo */
+  user_id_adm int(11), /* Id do user que é admin de algum grupo */
   group_id int(11), /* Id do grupo que é adm */
   when_elected datetime /* Quando foi elegido adm desse grupo */
 );
@@ -136,7 +169,7 @@ CREATE TABLE GroupsAdm (
  */
 CREATE TABLE GroupsRequest (
   group_request_id int(11), /* Id do convite que foi enviado */
-  username_sender int(11), /* Id do user que fez o convite */
+  user_id_sender int(11), /* Id do user que fez o convite */
   group_id_asked int(11), /* Id do grupo que recebeu o convite */
   when_requested datetime, /* Quando pediu para entrar */
   request_description varchar(255), /* Uma descrição opcional do convite */
@@ -151,9 +184,9 @@ CREATE TABLE GroupsRequest (
  */
 CREATE TABLE GroupsInvite (
   group_invite_id int(11), /* Id do convite que foi enviado */
-  username_sender int(11), /* Id do user que fez o convite */
+  user_id_sender int(11), /* Id do user que fez o convite */
   group_id_asked int(11), /* Id do grupo que recebeu o convite para fazer parte */
-  username_recipient int(11), /* Id do user que recebeu o convite */
+  user_id_recipient int(11), /* Id do user que recebeu o convite */
   when_invited datetime, /* Quando pediu para entrar */
   invite_description varchar(255), /* Uma descrição opcional do convite */
   invite_status varchar(80), /* O status do convite (waiting, refused, accepted) */
@@ -176,7 +209,7 @@ CREATE TABLE Comments (
 /* Tabela que relaciona os comentarios com os likes */
 CREATE TABLE CommentsLikes (
   comment_id_liked int(11), /* O Id do comentario relacionado */
-  username_liked int(11), /* O Id do user que deu o like */
+  user_id_liked int(11), /* O Id do user que deu o like */
   time_liked datetime /* Quando o comentario foi curtido */
 );
 
@@ -187,7 +220,7 @@ CREATE TABLE CommentsLikes (
  */
 CREATE TABLE Posts (
   post_id int(14) AUTO_INCREMENT, /* O Id do post AI */
-  owner_post_username int(11), /* O Id do user que fez o post */
+  owner_post_id int(11), /* O Id do user que fez o post */
   post_message text, /* O texto do post */
   time_sent datetime, /* Quando foi publicado */
   PRIMARY KEY(post_id)
@@ -196,7 +229,7 @@ CREATE TABLE Posts (
 /* Tabela que relaciona os posts com os likes */
 CREATE TABLE PostsLikes (
   post_id_liked int(14), /* O Id do post relacionado */
-  username_liked int(11), /* O Id do user que deu o like */
+  user_id_liked int(11), /* O Id do user que deu o like */
   time_liked datetime /* Quando o post foi curtido */
 );
 
@@ -212,7 +245,7 @@ CREATE TABLE Events (
   event_id int(11) AUTO_INCREMENT, /* O Id do evento AI*/
   event_description text, /* Uma descrição do evento */
   event_date datetime, /* O dia que o evento irá acontecer */
-  owner_event_username int(11), /* O Id do user que criou o evento */
+  owner_event_id int(11), /* O Id do user que criou o evento */
   group_id_belongs int(11), /* Se o evento pertence a um grupo indicará o Id desse grupo */
   PRIMARY KEY(event_id)
 );
@@ -220,7 +253,7 @@ CREATE TABLE Events (
 /* Tabela que relaciona os membros de um evento privado */
 CREATE TABLE EventMembers (
   event_id int(11), /* O Id do evento */
-  member_event_username int(11), /* O Id do user que é membro do evento */
+  member_event_id int(11), /* O Id do user que é membro do evento */
   when_joined datetime, /* A hora que o user entrou no evento */
   PRIMARY KEY(event_id)
 );
@@ -232,7 +265,7 @@ CREATE TABLE EventMembers (
  */
 CREATE TABLE EventRequest (
   event_request_id int(11), /* Id do convite que foi pedido para entrar */
-  username_sender int(11), /* Id do user que fez o convite */
+  user_id_sender int(11), /* Id do user que fez o convite */
   event_id_asked int(11), /* Id do evento que pediu para participar */
   when_requested datetime, /* Quando pediu para entrar */
   request_description varchar(255), /* Uma descrição opcional do convite */
@@ -247,9 +280,9 @@ CREATE TABLE EventRequest (
  */
 CREATE TABLE EventInvite (
   event_invite_id int(11), /* Id do convite que foi enviado */
-  username_sender int(11), /* Id do user que fez o convite */
+  user_id_sender int(11), /* Id do user que fez o convite */
   event_id_asked int(11), /* Id do evento que pediu para entrar */
-  username_recipient int(11), /* Id do user que recebeu o convite */
+  user_id_recipient int(11), /* Id do user que recebeu o convite */
   when_invited datetime, /* Quando pediu para entrar */
   invite_description varchar(255), /* Uma descrição opcional do convite */
   invite_status varchar(80), /* O status do convite (waiting, refused, accepted) */

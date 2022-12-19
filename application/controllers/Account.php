@@ -26,6 +26,12 @@ class Account extends My_controller
 
 		// Carrega o modelo usado no Login
 		$this->load->model('Account_model', 'account_model');
+
+		// Verifica se o user que está na página é o mesmo que está logado
+		if($username <> $this->session->userdata('username')){
+			$this->go_to_home();
+			return;
+		}
  
 		// Faz a requisição do user e verifica também no model se os dados estão corretos
 		$this->account = $this->account_model->get_user_by_username($username, $this->session->userdata());
@@ -38,46 +44,75 @@ class Account extends My_controller
 	}
 
 	/**
+	 * Passa o username para a ancora
+	 */
+	public function index()
+	{
+		$data = array(
+			'username' => $this->session->userdata('username')
+		);
+		$this->set_body_data($data);
+		$this->create_site_details('Account Settings', 'account/account-view', 'accountStyle');
+	}
+
+	/**
 	 * Funcionalidade para alterar os dados do user
 	 * A senha é alterada em outra view
+	 * 
+	 * Recarrega a pagina quando atualizar os dados
 	 */
-	public function index(): Void
+	public function details(): Void
 	{
-		// Regras do formulários
 		$this->form_validator->set_rules('username', 'Username', self::USERNAME_RULES);
 		$this->form_validator->set_rules('email', 'Email', self::EMAIL_RULES);
 		$this->form_validator->set_rules('phone', 'Phone', self::PHONE_RULES);
 		$this->form_validator->set_rules('name', 'Name', self::NAME_RULES);
 
-		// Testa se o login foi enviado e verifica o formulario
-		$login_executed = $this->set_listener($this, 'update_user', 'POST', $this->form_validator->run());
+		$update_executed = $this->set_listener($this, 'update_user', 'POST', $this->form_validator->run());
 
-		// Verifica se o formulario já foi enviado e retorna uma mensagem ao user
-		$info = $this->test_form($login_executed, 'update_status', 'update_info');
+		$info = $this->test_form($update_executed, 'update_status', 'update_info');
 
-		// Apresenta essa mensagem
 		$this->set_error_data(array('form_info' => $info));
 
-		// Envia as variaveis de link
 		$this->set_body_data($this->account);
 		
-		// Cria a view sem o menu
-		$this->create_site_details('Account Settings', 'account/account-view', 'accountStyle');
+		$this->create_site_details('Account Details Settings', 'account/account-details-view', 'accountStyle');
 
-		// Recarrega a pagina quando atualizar os dados
-		if($login_executed)
-			$this->go_to($this->session->userdata('username').'/account');
+		if($update_executed)
+			$this->go_to($this->session->userdata('username').'/account/details');
 	}
 
-	// Funcionalidade para atualizar os dados do user
+	/**
+	 * Funcionalidade para alterar os dados do user
+	 * A senha é alterada em outra view
+	 * 
+	 * Recarrega a pagina quando atualizar os dados
+	 */
+	public function permissions(): Void
+	{
+		$update_executed = $this->set_listener($this, 'update_data_permissions', 'POST');
+
+		$info = $this->test_form($update_executed, 'permissions_data_update_status', 'permissions_data_update_info');
+
+		$this->set_error_data(array('form_info' => $info));
+
+		$this->set_body_data($this->account);
+		
+		$this->create_site_details('Account Permissions Settings', 'account/account-permissions-view', 'accountStyle');
+
+		//if($update_executed)
+			//$this->go_to($this->session->userdata('username').'/account/perimssions');
+	}
+
+	/**
+	 * Funcionalidade para atualizar os dados do user
+	 * Verifica se está settado e com as regras certas
+	 */
 	protected function update_user()
 	{
-		// Verifica se está com as regras certas
-		if(!$this->input->post() || $this->form_validator->run() == FALSE)
+		if(!$post = $this->input->post() || $this->form_validator->run() == FALSE)
 			return;
 
-		// Cria um array user para tentar fazer o login
-		$post = $this->input->post();
 		$user = array(
 			'user_id' => $post['user_id'],
 			'username' => $post['username'],
@@ -87,7 +122,6 @@ class Account extends My_controller
 			'birthday' => $post['birthday']
 		);
 
-		// Verifica o user na DB retorna NULL se não conseguir
 		$update_query = $this->account_model->update_user($user, $this->session->userdata());
 		if(!$update_query){
 			$this->session->set_flashdata('update_status', 0);
@@ -95,12 +129,39 @@ class Account extends My_controller
 			return;
 		}
 		
-		// Set da mensagem de login
 		$this->session->set_flashdata('update_status', 1);
 		$this->session->set_flashdata('update_info', 'User updated!');
 
-		// Muda a sessão
 		$new_account_data = $this->account_model->get_user_by_id($user['user_id'], $this->session->userdata());
 		$this->session->set_userdata($new_account_data);
+	}
+
+	protected function update_data_permissions()
+	{
+		if(!$post = $this->input->post())
+			return;
+
+		$user = array(
+			'user_id' => $post['user_id'],
+			'username' => $post['username'],
+			'email' => $post['email'],
+			'phone' => $post['phone'],
+			'name' => $post['name'],
+			'birthday' => $post['birthday']
+		);
+
+		print_r($post);
+		//!!! Para fazer ainda -------------------------------------------------------------------------
+		return;
+
+		$update_query = $this->account_model->update_user_permissions($user, $this->session->userdata());
+		if(!$update_query){
+			$this->session->set_flashdata('update_status', 0);
+			$this->session->set_flashdata('update_info', 'Server error');
+			return;
+		}
+
+		$this->session->set_flashdata('update_status', 1);
+		$this->session->set_flashdata('update_info', 'User permissions updated!');
 	}
 }

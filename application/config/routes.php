@@ -62,3 +62,5 @@ $route['logout'] = 'Login/logout';
 $route[':any'] = 'Profile/index/$1';
 
 $route[':any/account'] = 'Account/index/$1';
+$route[':any/account/details'] = 'Account/details/$1';
+$route[':any/account/permissions'] = 'Account/permissions/$1';
