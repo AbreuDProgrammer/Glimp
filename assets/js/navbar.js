@@ -13,7 +13,7 @@ function closeNav()
 }
 
 $(document).ready(function(){
-    $('body').mousemove(function( event ) {
+    /*$('body').mousemove(function( event ) {
         // Width == X
         // Height == Y
         if((event.pageX/16) <= 2 && (event.pageY/16) <= ($('body').outerHeight()/16)-10 && navBarOpened === false){
@@ -21,5 +21,5 @@ $(document).ready(function(){
         }else if((event.pageX/16) > 16 && navBarOpened === true){
             closeNav();
         }
-    });
+    });*/
 });

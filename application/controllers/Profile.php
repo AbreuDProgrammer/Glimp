@@ -51,6 +51,11 @@ class Profile extends My_controller
 		 * só serão mostrados se o user decidir que sim
 		 */
 		$this->set_body_data($this->user);
+
+		// Envia a informação se o user que está na pagina é o dono da mesma
+		$this->set_body_data(array(
+			'is_owner' => $this->user['username'] == $this->session->userdata('username')
+		));
 		
 		// Cria a view sem o menu
 		$this->create_site_details('Profile', 'profile/index-view', 'profileStyle');

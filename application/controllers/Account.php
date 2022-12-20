@@ -7,7 +7,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  */
 class Account extends My_controller
 {
-	private $account;
 	private $user_permissions;
 
 	// Constantes para os formularios
@@ -35,18 +34,15 @@ class Account extends My_controller
 			$this->go_to_home();
 			return;
 		}
- 
-		// Faz a requisição do user e verifica também no model se os dados estão corretos
-		$this->account = $this->account_model->get_userdata($this->session->userdata(), $user);
 		
-		// Verifica se o user com esse username existe
-		if(!$this->account){
+		// Verifica se o user está logado
+		if(!$this->session->userdata()){
 			$this->go_to_home();
 			return;
 		}
 
 		// Cria a variavel de permissões da informação do user
-		$this->user_permissions = $this->account_model->get_data_permissions($this->account['user_id']);
+		$this->user_permissions = $this->account_model->get_data_permissions($this->session->userdata('user_id'));
 	}
 
 	/**
@@ -80,12 +76,9 @@ class Account extends My_controller
 
 		$this->set_error_data(array('form_info' => $info));
 		
-		$this->set_body_data($this->account);
+		$this->set_body_data($this->session->userdata());
 		
 		$this->create_site_details('Account Details Settings', 'account/account-details-view', 'accountStyle');
-
-		if($update_executed)
-			$this->go_to($this->session->userdata('username').'/account/details');
 	}
 
 	/**
@@ -103,11 +96,9 @@ class Account extends My_controller
 		$this->set_error_data(array('form_info' => $info));
 
 		$this->set_body_data($this->user_permissions);
+		$this->set_body_data(array('username' => $this->session->userdata('username')));
 		
 		$this->create_site_details('Account Permissions Settings', 'account/account-permissions-view', 'accountStyle');
-
-		//if($update_executed)
-			//$this->go_to($this->session->userdata('username').'/account/perimssions');
 	}
 
 	/**
@@ -116,9 +107,10 @@ class Account extends My_controller
 	 */
 	protected function update_user()
 	{
-		if(!$post = $this->input->post() || $this->form_validator->run() == FALSE)
+		$post = $this->input->post();
+		if(!$post || $this->form_validator->run() == FALSE)
 			return;
-
+			
 		$user = array(
 			'user_id' => $post['user_id'],
 			'username' => $post['username'],
@@ -138,13 +130,14 @@ class Account extends My_controller
 		$this->session->set_flashdata('update_status', 1);
 		$this->session->set_flashdata('update_info', 'User updated!');
 
-		$new_account_data = $this->account_model->get_user_by_id($user['user_id'], $this->session->userdata());
+		$new_account_data = $this->account_model->get_userdata($user, $this->session->userdata());
 		$this->session->set_userdata($new_account_data);
 	}
 
 	protected function update_data_permissions()
 	{
-		if(!$post = $this->input->post())
+		$post = $this->input->post();
+		if(!$post)
 			return;
 
 		$user = array(

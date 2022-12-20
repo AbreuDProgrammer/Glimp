@@ -21,10 +21,19 @@
 
 #username
 {
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
     height: 50%;
 }
 
 #name
 {
     height: 50%;
+}
+
+#engrenagem
+{
+    margin-left: 1em;
+    width: 2em;
 }
