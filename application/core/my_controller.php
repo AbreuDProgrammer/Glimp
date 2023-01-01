@@ -15,7 +15,7 @@ abstract class My_controller extends CI_Controller
 	private $data_footer = array();
 
 	// Configs para paths
-	private const INCLUDES_PATH = 'includes';
+	private const INCLUDES_PATH = '_includes';
 	private const INCLUDE_HEADER = 'header';
 	private const INCLUDE_NAV = 'menu';
 	private const INCLUDE_FOOTER = 'footer';
